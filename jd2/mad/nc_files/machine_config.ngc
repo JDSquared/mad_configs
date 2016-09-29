@@ -1,0 +1,12 @@
+o<machine_config> sub
+	(The following globals need to be defined for probing)
+	#<_probe_hfeed>=100.0 (High feed rate for probe search)
+	#<_probe_lfeed>=30.0 (Low feed rate for probe latch)
+	#<_eprobe_cal>=0.0 (Calibration value for e-probe)
+	#<_swprobe_cal>=[0.039817] (Calibration value for switch probe)
+	#<_max_arcw>=0.25 (Maximum dwell waiting for ARCOK in seconds)
+
+    G64 P0.003
+    M63 P0 (Default Probe OFF)
+    M09 (Default THC OFF)
+o<machine_config> endsub

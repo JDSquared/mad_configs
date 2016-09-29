@@ -1,0 +1,8 @@
+o<poll_arc> sub
+M66 P2 L3 Q5.
+O200 if [#5399 EQ -1.0]
+    (MSG, Error! ARC OK never asserted!)
+    M2
+O200 endif
+o<poll_arc> endsub
+ 

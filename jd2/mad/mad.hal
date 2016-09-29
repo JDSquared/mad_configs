@@ -1,0 +1,311 @@
+newthread servo-thread nowait
+
+# HAL Talk Server
+loadusr -W haltalk
+
+# Kinematics
+loadrt trivkins
+
+# motion controller, get name and thread periods from ini file
+# trajectory planner
+loadrt tp
+
+loadrt [EMCMOT]EMCMOT num_joints=[TRAJ]AXES servo_period_nsec=0
+
+# hostmot2 parent driver
+loadrt hostmot2 irq_period_nsec=1000000
+
+# hm2 low level io driver
+newinst [HOSTMOT2](DRIVER) [HOSTMOT2](DEVNAME) config=[HOSTMOT2](CONFIG)
+#setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 5000000
+
+# The torch interface component - must be after fpga loads
+loadrt btint_thc name=btint_axi0
+
+# E-Stop
+loadrt estop_latch
+
+# Functions
+addf hm2_[HOSTMOT2](BOARD).0.waitirq	   servo-thread
+addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread
+
+# Torch height function
+addf btint_thc.0.update                    servo-thread
+
+# The E-Stop latch function
+addf estop_latch.0                         servo-thread
+
+addf motion-command-handler                servo-thread
+addf motion-controller                     servo-thread
+
+addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread
+
+#*******************
+#  AXIS X
+#*******************
+
+# Position command and feedback
+net x-pos-cmd <= axis.0.motor-pos-cmd
+net x-vel-cmd <= axis.0.joint-vel-cmd
+net x-pos-cmd => hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-cmd
+#net x-pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-fb
+net x-pos-cmd => axis.0.motor-pos-fb
+
+# Axis enable chain
+net x-enable     <= axis.0.amp-enable-out
+setp hm2_[HOSTMOT2](BOARD).0.gpio.003.is_output true
+net x-enable     => hm2_[HOSTMOT2](BOARD).0.gpio.003.out
+net x-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.00.enable
+
+# Fault signal
+setp hm2_[HOSTMOT2](BOARD).0.gpio.000.is_output false
+net x-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.000.in
+net x-fault 	=> axis.0.amp-fault-in
+
+# Step Gen signals/setup
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirsetup        [AXIS_0]DIRSETUP
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirhold         [AXIS_0]DIRHOLD
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.steplen         [AXIS_0]STEPLEN
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.stepspace       [AXIS_0]STEPSPACE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.position-scale  [AXIS_0]STEP_SCALE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.step_type        0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.control-type     0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxaccel         [AXIS_0]STEPGEN_MAXACCEL
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxvel           [AXIS_0]STEPGEN_MAXVEL
+
+# Home and min limit for X axis are same signal - No max switch #
+setp hm2_[HOSTMOT2](BOARD).0.gpio.017.is_output false
+net x-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.017.in
+net x-home	=> axis.0.home-sw-in
+#net x-home 	=> axis.0.neg-lim-sw-in
+
+#*******************
+#  AXIS Y
+#*******************
+
+# Position command and feedback
+net y-pos-cmd <= axis.1.motor-pos-cmd
+net y-vel-cmd <= axis.1.joint-vel-cmd
+net y-pos-cmd => hm2_[HOSTMOT2](BOARD).0.stepgen.01.position-cmd
+#net y-pos-fb <= hm2_[HOSTMOT2](BOARD).0.stepgen.01.position-fb
+net y-pos-cmd => axis.1.motor-pos-fb
+
+# Axis enable chain
+net y-enable     <= axis.1.amp-enable-out
+setp hm2_[HOSTMOT2](BOARD).0.gpio.007.is_output true
+net y-enable     => hm2_[HOSTMOT2](BOARD).0.gpio.007.out
+net y-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.01.enable
+
+# Fault signal
+setp hm2_[HOSTMOT2](BOARD).0.gpio.004.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.008.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output false
+net y1-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.004.in
+net y2-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.008.in
+net y-fault 	<= hm2_[HOSTMOT2](BOARD).0.gpio.016.in
+net y1-fault 	=> axis.1.amp-fault-in
+
+# Step Gen signals/setup
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirsetup        [AXIS_1]DIRSETUP
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirhold         [AXIS_1]DIRHOLD
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.steplen         [AXIS_1]STEPLEN
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.stepspace       [AXIS_1]STEPSPACE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.position-scale  [AXIS_1]STEP_SCALE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.step_type       0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.control-type    0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.maxaccel        [AXIS_1]STEPGEN_MAXACCEL
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.maxvel          [AXIS_1]STEPGEN_MAXVEL
+
+## Tandem axis motor
+# Axis enable chain
+setp hm2_[HOSTMOT2](BOARD).0.gpio.011.is_output true
+net y-enable  => hm2_[HOSTMOT2](BOARD).0.gpio.011.out
+net y-enable  =>  hm2_[HOSTMOT2](BOARD).0.stepgen.02.enable
+
+# Invert the direction pin
+setp hm2_[HOSTMOT2](BOARD).0.gpio.010.invert_output true
+
+# Step Gen signals/setup for tandem axis motor
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.dirsetup        [AXIS_1]DIRSETUP
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.dirhold         [AXIS_1]DIRHOLD
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.steplen         [AXIS_1]STEPLEN
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.stepspace       [AXIS_1]STEPSPACE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-scale  [AXIS_1]STEP_SCALE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.step_type       0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.control-type    0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.maxaccel        [AXIS_1]STEPGEN_MAXACCEL
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.02.maxvel          [AXIS_1]STEPGEN_MAXVEL
+
+net y2-pos-fb <=  hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-fb
+net y-pos-cmd =>  hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-cmd
+
+# Home and max limit for Y axis are same signal - No min switch #
+setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output false
+net y-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.018.in
+net y-home	=> axis.1.home-sw-in
+#net y-home	=> axis.1.pos-lim-sw-in
+
+#*******************
+#  AXIS Z
+#*******************
+
+# Position command and feedback for Z axis
+net z-vel-cmd <= axis.2.joint-vel-cmd
+net thc-pos-cmd => hm2_[HOSTMOT2](BOARD).0.stepgen.03.position-cmd
+net z-pos-fb-raw <= hm2_[HOSTMOT2](BOARD).0.stepgen.03.position-fb
+
+# Axis enable chain
+net z-enable     <= axis.2.amp-enable-out
+setp hm2_[HOSTMOT2](BOARD).0.gpio.015.is_output true
+net z-enable     => hm2_[HOSTMOT2](BOARD).0.gpio.015.out
+net z-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.03.enable
+
+# Fault signal
+setp hm2_[HOSTMOT2](BOARD).0.gpio.012.is_output false
+net z-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.012.in
+net z-fault 	=> axis.2.amp-fault-in
+
+# Step Gen signals/setup
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.dirsetup        [AXIS_2]DIRSETUP
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.dirhold         [AXIS_2]DIRHOLD
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.steplen         [AXIS_2]STEPLEN
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.stepspace       [AXIS_2]STEPSPACE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.position-scale  [AXIS_2]STEP_SCALE
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.step_type        0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.control-type     0
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxaccel         [AXIS_2]STEPGEN_MAXACCEL
+setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxvel           [AXIS_2]STEPGEN_MAXVEL
+
+# Home and min limit for X axis are same signal - No max switch #
+setp hm2_[HOSTMOT2](BOARD).0.gpio.019.is_output false
+net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.019.in
+net z-home	=> axis.2.home-sw-in
+#net z-home	=> axis.2.neg-lim-sw-in
+
+#*******************
+# Z Probes
+#*******************
+
+setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.031.is_output false
+net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.024.in
+net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
+net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
+net probe-in	=>  motion.probe-input
+
+# Digital in 0 is the electrical probe, 1 is switch probe
+net el-probe		=> motion.digital-in-00
+net sw-probe		=> motion.digital-in-01
+net el-probe-over => motion.digital-in-03
+
+net el-probe-ctrl	<= motion.digital-out-00
+setp hm2_[HOSTMOT2](BOARD).0.gpio.021.is_output true
+net el-probe-ctrl	=> hm2_[HOSTMOT2](BOARD).0.gpio.021.out
+
+#  ---motion control signals---
+net in-position               <=  motion.in-position
+net machine-is-enabled        <=  motion.motion-enabled
+
+# --- MACHINE-IS-ENABLED ---
+setp hm2_[HOSTMOT2](BOARD).0.gpio.022.is_output true
+net machine-is-enabled     => hm2_[HOSTMOT2](BOARD).0.gpio.022.out
+
+# E-stop switch or torch breakaway are both treated the same
+setp hm2_[HOSTMOT2](BOARD).0.gpio.027.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.028.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.030.is_output true
+net estop-in	<= hm2_[HOSTMOT2](BOARD).0.gpio.027.in
+net tbreak-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
+net estop-loopout iocontrol.0.emc-enable-in <= estop_latch.0.ok-out
+net estop-loopin iocontrol.0.user-enable-out => estop_latch.0.ok-in
+net estop-reset iocontrol.0.user-request-enable => estop_latch.0.reset
+net remote-estop <= hm2_[HOSTMOT2](BOARD).0.gpio.029.in
+net remote-estop => estop_latch.0.fault-in
+net tbreak-override => hm2_[HOSTMOT2](BOARD).0.gpio.030.out
+
+# THC
+net arcok   <= btint_thc.0.arc-ok
+net arcok   => motion.digital-in-02
+net arcv    <= btint_thc.0.arc-volt
+net reqarcv => btint_thc.0.req-arc-volt
+net reqarcv <= motion.spindle-speed-out-abs
+net mvel    <= motion.current-vel
+net mvel    => btint_thc.0.cur-vel
+net rvel    <= motion.requested-vel
+net rvel    => btint_thc.0.req-vel
+net torchon <= motion.spindle-on
+net torchon => btint_thc.0.torch-on
+#net thcon   <= motion.digital-out-01
+net thcon   <= iocontrol.0.coolant-flood
+net thcon   => btint_thc.0.enable
+net thc-pos-cmd <= btint_thc.0.z-pos-out
+net thc-pos-in  => btint_thc.0.z-pos-in
+net thc-pos-in  <= axis.2.motor-pos-cmd
+net thc-fb  <= btint_thc.0.z-pos-fb
+net thc-fb  => axis.2.motor-pos-fb
+net z-pos-fb-raw => btint_thc.0.z-pos-fb-in
+net thc-ready <= btint_thc.0.ready
+net thc-active <= btint_thc.0.active
+net thc-volt-off => btint_thc.0.req-arc-volt-off
+net thc-dry-run => btint_thc.0.dry-run
+net thc-prev-err => btint_thc.0.prev-err
+net thc-vel-tol => btint_thc.0.vel-tol # Default 0.75
+net thc-volt-tol => btint_thc.0.volt-tol # Default 0.25
+net thc-correction-kp => btint_thc.0.correction-kp # Default 0.005
+net thc-correction-kd => btint_thc.0.correction-kd # Default 0.0025
+net thc-plasma-divisor => btint_thc.0.plasma-divisor # Default 50.0
+net thc-range-sel => btint_thc.0.range-sel # Default 10
+net thc-has-arc-ok => btint_thc.0.has-arc-ok # Default true
+
+# GUI Components
+newcomp gui-thc
+newpin gui-thc gui-thc.torch-led bit in
+newpin gui-thc gui-thc.torch-volt float in
+newpin gui-thc gui-thc.req-torch-volt float in
+newpin gui-thc gui-thc.thc-arcok bit in
+newpin gui-thc gui-thc.tbreak-override bit out
+newpin gui-thc gui-thc.btint-voltoff float out
+newpin gui-thc gui-thc.btint-dryrun bit out
+newpin gui-thc gui-thc.estop bit in
+newpin gui-thc gui-thc.tbreak bit in
+newpin gui-thc gui-thc.elprobe-override bit out
+newpin gui-thc gui-thc.thc-vel-tol float out
+newpin gui-thc gui-thc.thc-volt-tol float out
+newpin gui-thc gui-thc.thc-correction-kp float out
+newpin gui-thc gui-thc.thc-correction-kd float out
+newpin gui-thc gui-thc.thc-plasma-divisor float out
+newpin gui-thc gui-thc.thc-range-sel u32 out
+newpin gui-thc gui-thc.thc-has-arc-ok bit out
+ready gui-thc
+
+net torchon => gui-thc.torch-led
+net arcv => gui-thc.torch-volt
+#net thc-ready => gui-thc.thc-ready
+#net thc-active => gui-thc.thc-active
+net reqarcv => gui-thc.req-torch-volt
+net tbreak-override => gui-thc.tbreak-override
+net thc-volt-off => gui-thc.btint-voltoff
+net thc-dry-run <= gui-thc.btint-dryrun
+#net thc-prev-err => gui-thc.torch-preverr
+#net mvel => gui-thc.torch-cur-vel
+#net rvel => gui-thc.torch-req-vel
+#net thcon => gui-thc.thc-enable
+net arcok => gui-thc.thc-arcok
+net estop-in => gui-thc.estop
+net tbreak-in => gui-thc.tbreak
+net el-probe-over => gui-thc.elprobe-override
+sets thc-vel-tol 0.75
+sets thc-volt-tol 0.25
+sets thc-correction-kp 0.005
+sets thc-correction-kd 0.0025
+sets thc-plasma-divisor 50.0
+sets thc-range-sel 10
+sets thc-has-arc-ok true
+#net thc-vel-tol => gui-thc.thc-vel-tol
+#net thc-volt-tol => gui-thc.thc-volt-tol
+#net thc-correction-kp => gui-thc.thc-correction-kp
+#net thc-correction-kd => gui-thc.thc-correction-kd
+#net thc-plasma-divisor => gui-thc.thc-plasma-divisor
+#net thc-range-sel => gui-thc.thc-range-sel
+#net thc-has-arc-ok => gui-thc.thc-has-arc-ok

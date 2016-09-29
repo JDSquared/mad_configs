@@ -1,0 +1,11 @@
+(#1 is rapid return height)
+o<ecreip> sub
+
+G40
+(Turn off torch and THC)
+M5
+M65 P1
+G04 P0.1
+
+G00 Z#1
+o<ecreip> endsub

@@ -1,0 +1,28 @@
+(#1 Cutting Height)
+(#2 Cutting Feedrate)
+(#3 Cutting Voltage)
+(#4 Pierce Dwell)
+(#5 Pierce Height)
+(Expects the following globals)
+(#<_probe_hfeed> High feed rate for probe search)
+(#<_probe_lfeed> Low feed rate for probe latch)
+(#<_probe_lheight> Maximum z distance to travel for probe latch)
+(#<_max_arcw> Maximum dwell waiting for ARCOK in seconds)
+(#<_eprobe_cal> Calibration value for e-probe)
+(#<_swprobe_cal> Calibration value for switch probe)
+
+O<pierce> sub
+    o<probe_z> call [#5] [0.0]
+
+    S#3 (Set the desired arc voltage)
+
+    M3 (Start torch)
+    G04 P#4 (Dwell the pierce delay)
+
+    o<poll_arc> call
+
+    (Feed to cut height)
+    G01 Z#1 F#2
+O<pierce> endsub
+
+M2 (If we ever get here stop the program execution)
