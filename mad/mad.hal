@@ -292,7 +292,7 @@ net arcok => gui-thc.thc-arcok
 net estop-in => gui-thc.estop
 net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
-net thc-lockout <= gui-thc.lockout
+net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
 sets thc-vel-tol 0.75
 sets thc-volt-tol 0.25
