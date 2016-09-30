@@ -236,7 +236,7 @@ net rvel    <= motion.requested-vel
 net rvel    => btint_thc.0.req-vel
 net torchon <= motion.spindle-on
 net torchon => btint_thc.0.torch-on
-#net thcon   <= motion.digital-out-01
+net torchon-man => btint_thc.0.torch-on-man
 net thcon   <= iocontrol.0.coolant-flood
 net thcon   => btint_thc.0.enable
 net thc-pos-cmd <= btint_thc.0.z-pos-out
@@ -257,6 +257,7 @@ net thc-correction-kd => btint_thc.0.correction-kd # Default 0.0025
 net thc-plasma-divisor => btint_thc.0.plasma-divisor # Default 50.0
 net thc-range-sel => btint_thc.0.range-sel # Default 10
 net thc-has-arc-ok => btint_thc.0.has-arc-ok # Default true
+net thc-lockout => btint_thc.0.lockout
 
 # GUI Components
 newcomp gui-thc
@@ -277,24 +278,22 @@ newpin gui-thc gui-thc.thc-correction-kd float out
 newpin gui-thc gui-thc.thc-plasma-divisor float out
 newpin gui-thc gui-thc.thc-range-sel u32 out
 newpin gui-thc gui-thc.thc-has-arc-ok bit out
+newpin gui-thc gui-thc.thc-lockout bit out
+newpin gui-thc gui-thc.torch-on-man bit out
 ready gui-thc
 
 net torchon => gui-thc.torch-led
 net arcv => gui-thc.torch-volt
-#net thc-ready => gui-thc.thc-ready
-#net thc-active => gui-thc.thc-active
 net reqarcv => gui-thc.req-torch-volt
 net tbreak-override => gui-thc.tbreak-override
 net thc-volt-off => gui-thc.btint-voltoff
 net thc-dry-run <= gui-thc.btint-dryrun
-#net thc-prev-err => gui-thc.torch-preverr
-#net mvel => gui-thc.torch-cur-vel
-#net rvel => gui-thc.torch-req-vel
-#net thcon => gui-thc.thc-enable
 net arcok => gui-thc.thc-arcok
 net estop-in => gui-thc.estop
 net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
+net thc-lockout <= gui-thc.lockout
+net torchon-man <= gui-thc.torch-on-man
 sets thc-vel-tol 0.75
 sets thc-volt-tol 0.25
 sets thc-correction-kp 0.005
@@ -302,6 +301,7 @@ sets thc-correction-kd 0.0025
 sets thc-plasma-divisor 50.0
 sets thc-range-sel 10
 sets thc-has-arc-ok true
+
 #net thc-vel-tol => gui-thc.thc-vel-tol
 #net thc-volt-tol => gui-thc.thc-volt-tol
 #net thc-correction-kp => gui-thc.thc-correction-kp
