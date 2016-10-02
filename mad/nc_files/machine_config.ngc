@@ -7,6 +7,7 @@ o<machine_config> sub
 	#<_max_arcw>=0.25 (Maximum dwell waiting for ARCOK in seconds)
 
     G64 P0.003
+	M05 (Default Torch OFF)
     M63 P0 (Default Probe OFF)
     M09 (Default THC OFF)
 o<machine_config> endsub
