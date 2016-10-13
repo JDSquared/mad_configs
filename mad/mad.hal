@@ -294,18 +294,18 @@ net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
-sets thc-vel-tol 0.75
-sets thc-volt-tol 0.25
-sets thc-correction-kp 0.005
-sets thc-correction-kd 0.0025
-sets thc-plasma-divisor 50.0
-sets thc-range-sel 10
-sets thc-has-arc-ok true
+net thc-vel-tol => gui-thc.thc-vel-tol
+net thc-volt-tol => gui-thc.thc-volt-tol
+net thc-correction-kp => gui-thc.thc-correction-kp
+net thc-correction-kd => gui-thc.thc-correction-kd
+net thc-plasma-divisor => gui-thc.thc-plasma-divisor
+net thc-range-sel => gui-thc.thc-range-sel
+net thc-has-arc-ok => gui-thc.thc-has-arc-ok
 
-#net thc-vel-tol => gui-thc.thc-vel-tol
-#net thc-volt-tol => gui-thc.thc-volt-tol
-#net thc-correction-kp => gui-thc.thc-correction-kp
-#net thc-correction-kd => gui-thc.thc-correction-kd
-#net thc-plasma-divisor => gui-thc.thc-plasma-divisor
-#net thc-range-sel => gui-thc.thc-range-sel
-#net thc-has-arc-ok => gui-thc.thc-has-arc-ok
+#sets thc-vel-tol 0.75
+#sets thc-volt-tol 0.25
+#sets thc-correction-kp 0.005
+#sets thc-correction-kd 0.0025
+#sets thc-plasma-divisor 50.0
+#sets thc-range-sel 10
+#sets thc-has-arc-ok true
