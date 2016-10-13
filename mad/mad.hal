@@ -271,13 +271,6 @@ newpin gui-thc gui-thc.btint-dryrun bit out
 newpin gui-thc gui-thc.estop bit in
 newpin gui-thc gui-thc.tbreak bit in
 newpin gui-thc gui-thc.elprobe-override bit out
-newpin gui-thc gui-thc.thc-vel-tol float out
-newpin gui-thc gui-thc.thc-volt-tol float out
-newpin gui-thc gui-thc.thc-correction-kp float out
-newpin gui-thc gui-thc.thc-correction-kd float out
-newpin gui-thc gui-thc.thc-plasma-divisor float out
-newpin gui-thc gui-thc.thc-range-sel u32 out
-newpin gui-thc gui-thc.thc-has-arc-ok bit out
 newpin gui-thc gui-thc.thc-lockout bit out
 newpin gui-thc gui-thc.torch-on-man bit out
 ready gui-thc
@@ -294,13 +287,24 @@ net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
-net thc-vel-tol => gui-thc.thc-vel-tol
-net thc-volt-tol => gui-thc.thc-volt-tol
-net thc-correction-kp => gui-thc.thc-correction-kp
-net thc-correction-kd => gui-thc.thc-correction-kd
-net thc-plasma-divisor => gui-thc.thc-plasma-divisor
-net thc-range-sel => gui-thc.thc-range-sel
-net thc-has-arc-ok => gui-thc.thc-has-arc-ok
+
+newcomp thc-settings
+newpin thc-settings thc-settings.thc-vel-tol float out
+newpin thc-settings thc-settings.thc-volt-tol float out
+newpin thc-settings thc-settings.thc-correction-kp float out
+newpin thc-settings thc-settings.thc-correction-kd float out
+newpin thc-settings thc-settings.thc-plasma-divisor float out
+newpin thc-settings thc-settings.thc-range-sel u32 out
+newpin thc-settings thc-settings.thc-has-arc-ok bit out
+ready thc-settings
+
+net thc-vel-tol => thc-settings.thc-vel-tol
+net thc-volt-tol => thc-settings.thc-volt-tol
+net thc-correction-kp => thc-settings.thc-correction-kp
+net thc-correction-kd => thc-settings.thc-correction-kd
+net thc-plasma-divisor => thc-settings.thc-plasma-divisor
+net thc-range-sel => thc-settings.thc-range-sel
+net thc-has-arc-ok => thc-settings.thc-has-arc-ok
 
 #sets thc-vel-tol 0.75
 #sets thc-volt-tol 0.25
@@ -309,3 +313,4 @@ net thc-has-arc-ok => gui-thc.thc-has-arc-ok
 #sets thc-plasma-divisor 50.0
 #sets thc-range-sel 10
 #sets thc-has-arc-ok true
+
