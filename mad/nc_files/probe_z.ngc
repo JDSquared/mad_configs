@@ -43,7 +43,7 @@ O<probe_z> sub
 	O125 endif	
 
 	(Probe down first at high speed - target max machine travel)
-	#<tz>=[#<_ini[AXIS_2]min_limit> - #<wz>]
+	#<tz>=[0.99 * #<_ini[AXIS_2]min_limit> - #<wz>]
 	F#<_hal[probe-hfeed]>
 
 	G38.3 Z#<tz>
@@ -85,7 +85,7 @@ O<probe_z> sub
 	O300 endif
 
 	(Set the Z Work to the proper location)
-	G10 L2 P#5220 Z[#5063 + #<zoff>] (#5383 should be zero)
+	G10 L2 P#5220 Z[#<wz> + #5063 + #<zoff>] (#5383 should be zero)
 
 	M101 (Done with eprobe, disconnect)
 
