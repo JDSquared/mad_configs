@@ -194,11 +194,7 @@ net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
 net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
 net probe-in	=>  motion.probe-input
 
-# Digital in 0 is the electrical probe, 1 is switch probe
-net el-probe		=> motion.digital-in-00
-net sw-probe		=> motion.digital-in-01
-net el-probe-over => motion.digital-in-03
-
+# Electric probe control pin is dio 0
 net el-probe-ctrl	<= motion.digital-out-00
 setp hm2_[HOSTMOT2](BOARD).0.gpio.021.is_output true
 net el-probe-ctrl	=> hm2_[HOSTMOT2](BOARD).0.gpio.021.out
@@ -306,11 +302,16 @@ net thc-plasma-divisor => thc-settings.thc-plasma-divisor
 net thc-range-sel => thc-settings.thc-range-sel
 net thc-has-arc-ok => thc-settings.thc-has-arc-ok
 
-#sets thc-vel-tol 0.75
-#sets thc-volt-tol 0.25
-#sets thc-correction-kp 0.005
-#sets thc-correction-kd 0.0025
-#sets thc-plasma-divisor 50.0
-#sets thc-range-sel 10
-#sets thc-has-arc-ok true
+newcomp probe-settings
+newpin probe-settings probe-settings.high-feed float out
+newpin probe-settings probe-settings.low-feed float out
+newpin probe-settings probe-settings.el-cal-off float out
+newpin probe-settings probe-settings.sw-cal-off float out
+ready probe-settings
+
+net probe-hfeed <= probe-settings.high-feed
+net probe-lfeed <= probe-settings.low-feed
+net probe-el-off <= probe-settings.el-cal-off
+net probe-sw-off <= probe-settings.sw-cal-off
+
 

@@ -1,8 +1,4 @@
-(Expects the following globals)
-(#<_probe_hfeed> High feed rate for probe search)
-(#<_probe_lfeed> Low feed rate for probe latch)
-(#<_eprobe_cal> Calibration value for e-probe)
-(#<_swprobe_cal> Calibration value for switch probe)
+(Probe in Z)
 (Z Z Height after probe in work coordinate)
 (p Ignore electrical probe if 1.0)
 
@@ -16,8 +12,8 @@ O<probe_z> sub
 	G90 (Probing starts in absolute)
 	G49
 
-	M66 P3 L0 (Check if the Electrical Probe is overridden)
-	O100 if [#5399 NE 1.0]
+	(Check if the Electrical Probe is overridden)
+	O100 if [#<_hal[el-probe-over]> NE 1.0]
 		O101 if [EXISTS[#<p>]] (Check if program wants E-Probe)
 			O102 if[#<p> NE 1.0]
 				M100 (Turn on the eprobe if not locked out)
@@ -36,21 +32,19 @@ O<probe_z> sub
 	(Check for a positive probe signal)
 	(It is an error if the probe is already)
 	(true before calling probe cycle)
-	M66 P0 L0
-	O125 if [#5399 EQ 1.0]
+	O125 if [#<_hal[el-probe]> EQ 1.0]
 		M101 (Turn off e-probe before exiting)	
 		(ABORT, Ohmic probe already tripped before cycle!)	
 	O125 else
-		M66 P1 L0
-		O130 if[#5399 EQ 1.0]
+		O130 if[#<_hal[sw-probe]> EQ 1.0]
 			M101 (Turn off e-probe before exiting)
 			(ABORT, Switch probe already tripped before cycle!)
 		O130 endif	
 	O125 endif	
 
 	(Probe down first at high speed - target max machine travel)
-	#<tz>=[-3.625 - #<wz>]
-	F#<_probe_hfeed>
+	#<tz>=[#<_ini[AXIS_2]min_limit> - #<wz>]
+	F#<_hal[probe-hfeed]>
 
 	G38.3 Z#<tz>
 
@@ -61,12 +55,10 @@ O<probe_z> sub
 	O150 endif
 
 	(We hit the stock. Get the right offset cal value)
-	M66 P0 L0
-	O200 if [#5399 EQ 1.0]
+	O200 if [#<_hal[el-probe]> EQ 1.0]
 		#<zoff>= #<_eprobe_cal> (E-Probe touched)
 	O200 else
-		M66 P1 L0
-		O210 if [#5399 EQ 1.0]
+		O210 if [#<_hal[sw-probe]> EQ 1.0]
 			#<zoff>= #<_swprobe_cal> (Switch Probe touched)
 		O210 else
 			(Neither are true, but the probe succeeded?)
@@ -83,7 +75,7 @@ O<probe_z> sub
 	O250 endif
 
 	(Probe up at low speed to latch height)
-	F#<_probe_lfeed> 
+	F#<_hal[probe-lfeed]>
 	G38.5 Z#<tz>
 	
 	(Check for a good probe result)

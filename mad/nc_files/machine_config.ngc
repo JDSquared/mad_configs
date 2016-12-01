@@ -1,10 +1,4 @@
 o<machine_config> sub
-	(The following globals need to be defined for probing)
-	#<_probe_hfeed>=100.0 (High feed rate for probe search)
-	#<_probe_lfeed>=30.0 (Low feed rate for probe latch)
-	#<_eprobe_cal>=0.0 (Calibration value for e-probe)
-	#<_swprobe_cal>=[0.039817] (Calibration value for switch probe)
-
 	G64 P0.003 G92.1 G49
 	M101 (Default Probe OFF)
 	M131 (Default THC OFF)
