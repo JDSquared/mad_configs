@@ -56,10 +56,10 @@ O<probe_z> sub
 
 	(We hit the stock. Get the right offset cal value)
 	O200 if [#<_hal[el-probe]> EQ 1.0]
-		#<zoff>= #<_eprobe_cal> (E-Probe touched)
+		#<zoff>= #<_hal[probe-el-off]>  (E-Probe touched)
 	O200 else
 		O210 if [#<_hal[sw-probe]> EQ 1.0]
-			#<zoff>= #<_swprobe_cal> (Switch Probe touched)
+			#<zoff>= #<_hal[probe-sw-off]> (Switch Probe touched)
 		O210 else
 			(Neither are true, but the probe succeeded?)
 			M101 (Turn off e-probe before exiting)	
