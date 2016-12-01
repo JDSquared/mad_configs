@@ -17,6 +17,7 @@ CYCLE_TIME = 0.010
 PARAMETER_FILE = mad.var
 SUBROUTINE_PATH = ~/jd2/mad/nc_files/
 REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
+REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 
 [EMCMOT]
 EMCMOT = motmod

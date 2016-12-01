@@ -3,86 +3,97 @@
 (#<_probe_lfeed> Low feed rate for probe latch)
 (#<_eprobe_cal> Calibration value for e-probe)
 (#<_swprobe_cal> Calibration value for switch probe)
-(#1 Height after probe)
-(#2 Ignore electrical probe if 1.0)
+(Z Z Height after probe in work coordinate)
+(p Ignore electrical probe if 1.0)
 
 O<probe_z> sub
     #<oldfeed>=#<_feed>
     #<oldabs>=#<_incremental>
-    #<oldcoord_gnum>=[#<_coord_system> / 10.0]
-    #<oldcoord>=#5220
+	#<wcord>=#5220
+	#<zoff>=0.0
+	#<zt>=0.0
 
     G90 (Probing starts in absolute)
     G49
 
-    M66 P3 L0 (Check if the Electrical Probe is overridden)
-    O100 if [#5399 NE 1.0]
-      O101 if [#2 NE 1.0]
-        M64 P0  (Turn on the eprobe)
-      O101 endif
-    O100 endif
+	M66 P3 L0 (Check if the Electrical Probe is overridden)
+	O100 if [#5399 NE 1.0]
+		O101 if [EXISTS[#<p>]] (Check if program wants E-Probe)
+			O102 if[#<p> NE 1.0]
+				M64 P0 (Turn on the eprobe if not locked out)
+			O102 else
+				M65 P0 (Turn off otherwise)
+			O102 endif
+		O101 else
+			M64 P0 (Default probe on if no P word)
+		O101 endif
+	O100 endif
 
-    O102 if [#<oldcoord> EQ 9]
-        (MSG, Error! G59.3 is a reserved coordinate system!)
-        M65 P0 (Done with eprobe, disconnect)
-        M2
-    O102 endif
+	(Get the machine coordinates of our work offset in Z)
+	#<wz>=#[5203 + [#<wcord> * 20] 	
+	#<maxz>=[-1 * #<wz>]
 
-    F#<_probe_hfeed>
+	(Probe down first at high speed - target max machine travel)
+	#<tz>=[-3.625 - #<wz>]
+	F#<_probe_hfeed>
+	G38.3 Z#<tz>
 
-    G10 L2 P9 X0.0 Y0.0 Z0.0
-
-    G59.3 G38.3 Z-3.625 (Probe down first at high speed)
-    O103 if [#5070 NE 1.0]
+	(Check for successful probe)
+    O150 if [#5070 NE 1.0]
         M65 P0 (Done with eprobe, disconnect)
         (MSG, Error! Probe failed to find stock!)
         M2
-    O103 endif
+    O150 endif
+
     (We hit the stock. Get the right offset cal value)
     M66 P0 L0
-    O105 if [#5399 EQ 1.0]
+    O200 if [#5399 EQ 1.0]
         #<zoff>= #<_eprobe_cal> (E-Probe touched)
-    O105 else
+    O200 else
         M66 P1 L0
-        O106 if [#5399 EQ 1.0]
+        O210 if [#5399 EQ 1.0]
             #<zoff>= #<_swprobe_cal> (Switch Probe touched)
-        O106 else
+        O210 else
+			(Neither are true, but the probe succeeded?)
             M65 P0 (Done with eprobe, disconnect)
-            (This should never happen because of O101)
-            (MSG, Error! Probe failed to find stock!)
+            (MSG, Error! Probe failed to find stock checking pin values!)
             M2
-        O106 endif
-    O105 endif
+        O210 endif
+    O200 endif
 
-    #21=[[#<_metric>*12.7 + #<_imperial>*0.5] + #5063]
-    O110 if [#21 GT 0.0]
+	(Make sure Z has travel for probe move)
+    #<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
+    O250 if [#<tz> GT #<maxz>]
         M65 P0 (Done with eprobe, disconnect)
-        (MSG, Error! Probe move over travels Z! Check for debris?)
+        (MSG, Error! Probe move over travels Z! Check for debris or water?)
         M2
-    O110 endif
+    O250 endif
 
-    F#<_probe_lfeed> (Probe up at low speed to latch height)
-    G90 G38.5 Z#21
-    O201 if [#5070 NE 1.0]
+	(Probe up at low speed to latch height)
+    F#<_probe_lfeed> 
+    G38.5 Z#<tz>
+	
+	(Check for a good probe result)
+    O300 if [#5070 NE 1.0]
         M65 P0 (Done with eprobe, disconnect)
-        (MSG, Error! Probe failure!)
+        (MSG, Error! Probe failure on upstroke!)
         M2
-    O201 endif
+    O300 endif
+
+    (Set the Z Work to the proper location)
+    G10 L2 P#5220 Z[#5063 + #<zoff>] (#5383 should be zero)
 
     M65 P0 (Done with eprobe, disconnect)
 
-    (Set the Z Work to the proper location)
-    G10 L2 P#<oldcoord> Z[#5063 + #<zoff>] (#5383 should be zero)
+    (Restore old feed rate)
+	F#<oldfeed>
 
-    (Restore old feed rate and coord system)
-    G#<oldcoord_gnum> F#<oldfeed>
-
-    G90 G00 Z#1 (Rapid to requested height)
+    G90 G00 Z#<Z> (Rapid to requested height)
 
     (Restore the old positioning mode)
-    O300 if [#<oldabs> EQ 1]
+    O350 if [#<oldabs> EQ 1]
         G91
-    O300 endif
+    O350 endif
 
 O<probe_z> endsub
 
