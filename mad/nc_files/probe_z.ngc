@@ -38,7 +38,7 @@ O<probe_z> sub
 	(true before calling probe cycle)
 	M66 P0 L0
 	O125 if [#5399 EQ 1.0]
-		(ERR, Error! Ohmic probe already tripped before cycle!)
+		(ERR, Ohmic probe already tripped before cycle!)
 		M65 P0 (Turn off e-probe before exiting)		
 		o<probe_z> return [1]	
 	O125 else
