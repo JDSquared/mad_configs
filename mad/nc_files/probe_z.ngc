@@ -38,16 +38,16 @@ O<probe_z> sub
 	(true before calling probe cycle)
 	M66 P0 L0
 	O125 if [#5399 EQ 1.0]
-		(MSG, Error! Ohmic probe already tripped before cycle!)
+		(ERR, Error! Ohmic probe already tripped before cycle!)
 		M65 P0 (Turn off e-probe before exiting)		
-		M2	
+		o<probe_z> return [1]	
 	O125 else
 		M66 P1 L0
 		O130 if[#5399 EQ 1.0]
 			(MSG, Error! Switch probe already tripped before cycle!)
+			M65 P0 (Turn off e-probe before exiting)
+			o<probe_z> return [1]
 		O130 endif	
-		M65 P0 (Turn off e-probe before exiting)
-		M2
 	O125 endif	
 
 	(Probe down first at high speed - target max machine travel)
@@ -60,7 +60,7 @@ O<probe_z> sub
     O150 if [#5070 NE 1.0]
         M65 P0 (Done with eprobe, disconnect)
         (MSG, Error! Probe failed to find stock!)
-        M2
+        o<probe_z> return [1]
     O150 endif
 
     (We hit the stock. Get the right offset cal value)
@@ -75,7 +75,7 @@ O<probe_z> sub
 			(Neither are true, but the probe succeeded?)
             M65 P0 (Done with eprobe, disconnect)
             (MSG, Error! Probe failed to find stock checking pin values!)
-            M2
+            o<probe_z> return [1]
         O210 endif
     O200 endif
 
@@ -84,7 +84,7 @@ O<probe_z> sub
     O250 if [#<tz> GT #<maxz>]
         M65 P0 (Done with eprobe, disconnect)
         (MSG, Error! Probe move over travels Z! Check for debris or water?)
-        M2
+        o<probe_z> return [1]
     O250 endif
 
 	(Probe up at low speed to latch height)
@@ -95,7 +95,7 @@ O<probe_z> sub
     O300 if [#5070 NE 1.0]
         M65 P0 (Done with eprobe, disconnect)
         (MSG, Error! Probe failure on upstroke!)
-        M2
+        o<probe_z> return [1]
     O300 endif
 
     (Set the Z Work to the proper location)
@@ -113,6 +113,7 @@ O<probe_z> sub
         G91
     O350 endif
 
+	O<probe_z> return [0]
 O<probe_z> endsub
 
-M2 (If we ever get here stop the program execution)
+o<probe_z> return [1] (If we ever get here stop the program execution)
