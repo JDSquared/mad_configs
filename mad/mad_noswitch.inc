@@ -18,6 +18,8 @@ PARAMETER_FILE = mad.var
 SUBROUTINE_PATH = ~/jd2/mad/nc_files/
 REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
+REMAP=M100 modalgroup=10 argspec= ngc=el_probe_on
+REMAP=M101 modalgroup=10 argspec= ngc=el_probe_off
 
 [EMCMOT]
 EMCMOT = motmod

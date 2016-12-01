@@ -20,12 +20,12 @@ O<probe_z> sub
 	O100 if [#5399 NE 1.0]
 		O101 if [EXISTS[#<p>]] (Check if program wants E-Probe)
 			O102 if[#<p> NE 1.0]
-				M64 P0 (Turn on the eprobe if not locked out)
+				M100 (Turn on the eprobe if not locked out)
 			O102 else
-				M65 P0 (Turn off otherwise)
+				M101 (Turn off otherwise)
 			O102 endif
 		O101 else
-			M64 P0 (Default probe on if no P word)
+			M100 (Default probe on if no P word)
 		O101 endif
 	O100 endif
 
@@ -38,12 +38,12 @@ O<probe_z> sub
 	(true before calling probe cycle)
 	M66 P0 L0
 	O125 if [#5399 EQ 1.0]
-		M65 P0 (Turn off e-probe before exiting)	
+		M101 (Turn off e-probe before exiting)	
 		(ABORT, Ohmic probe already tripped before cycle!)	
 	O125 else
 		M66 P1 L0
 		O130 if[#5399 EQ 1.0]
-			M65 P0 (Turn off e-probe before exiting)
+			M101 (Turn off e-probe before exiting)
 			(ABORT, Switch probe already tripped before cycle!)
 		O130 endif	
 	O125 endif	
@@ -56,7 +56,7 @@ O<probe_z> sub
 
 	(Check for successful probe)
 	O150 if [#5070 NE 1.0]
-		M65 P0 (Done with eprobe, disconnect)
+		M101 (Done with eprobe, disconnect)
 		(ABORT, Probe failed to find stock!)
 	O150 endif
 
@@ -70,7 +70,7 @@ O<probe_z> sub
 			#<zoff>= #<_swprobe_cal> (Switch Probe touched)
 		O210 else
 			(Neither are true, but the probe succeeded?)
-			M65 P0 (Turn off e-probe before exiting)	
+			M101 (Turn off e-probe before exiting)	
 			(ABORT, Probe failed to find stock checking pin values!)
 		O210 endif
 	O200 endif
@@ -78,8 +78,8 @@ O<probe_z> sub
 	(Make sure Z has travel for probe move)
 	#<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
 	O250 if [#<tz> GT #<maxz>]
-		M65 P0 (Turn off e-probe before exiting)
-		(ABORT, Probe move over travels Z!\r\nCheck for debris or water?)
+		M101 (Turn off e-probe before exiting)
+		(ABORT, Probe move over travels positive Z!\r\nCheck for debris or water?)
 	O250 endif
 
 	(Probe up at low speed to latch height)
@@ -88,14 +88,14 @@ O<probe_z> sub
 	
 	(Check for a good probe result)
 	O300 if [#5070 NE 1.0]
-		M65 P0 (Turn off e-probe before exiting)
+		M101 (Turn off e-probe before exiting)
 		(ABORT, Error! Probe failure on upstroke!)
 	O300 endif
 
 	(Set the Z Work to the proper location)
 	G10 L2 P#5220 Z[#5063 + #<zoff>] (#5383 should be zero)
 
-	M65 P0 (Done with eprobe, disconnect)
+	M101 (Done with eprobe, disconnect)
 
 	(Restore old feed rate)
 	F#<oldfeed>
@@ -108,6 +108,5 @@ O<probe_z> sub
 	O350 endif
 O<probe_z> endsub
 
- (If we ever get here stop the program execution)
-M2
+M2 (If we ever get here stop the program execution)
 

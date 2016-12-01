@@ -1,13 +1,14 @@
+(This routine moves the Z to machine home)
+(then moves to XYA position in work coordinates)
+(and finally moves to Z in work coordinates)
+(All parameters except C are optional)
+(P Work Coordinate G-Number 54, 55, etc.)
+(x X desired position)
+(y Y desired position)
+(z Z desired position)
+(a A desired position)
+
 O<safe_go> sub
-	(This routine moves the Z to machine home)
-	(then moves to XYA position in work coordinates)
-	(and finally moves to Z in work coordinates)
-	(All parameters except C are optional)
-	(P Work Coordinate G-Number 54, 55, etc.)
-	(x X desired position)
-	(y Y desired position)
-	(z Z desired position)
-	(a A desired position)
 
 	G40 G90 (Absolute Move, no cutter compensation)
 	G53 G00 Z0.0 (Move Z head to home)
@@ -50,3 +51,4 @@ O<safe_go> sub
 O<safe_go> endsub
 
 M2 (If we ever get here stop the program execution)
+

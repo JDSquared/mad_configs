@@ -1,0 +1,8 @@
+(Remap subroutine to turn off the electrical "ohmic" probe)
+O<el_probe_off> sub
+	M65 P0 (Turn on the eprobe)
+	G04 P0.15 (Dwell to give relay time to open)
+O<el_probe_off> endsub
+
+M2 (If we ever get here stop the program execution)
+
