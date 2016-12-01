@@ -1,7 +1,0 @@
-#!/bin/bash
-# Write new Z probe calibration data to memory
-swcal=$1
-sed -i "s/\(#<_swprobe_cal>=\)[[:space:]\t]*\[.*\]/#<_swprobe_cal>=\[${swcal}\]/g" /home/mdadmn/machinekit/configs/by_machine/jd2/mad/nc_files/machine_config.ngc
-cp /home/mdadmn/machinekit/configs/by_machine/jd2/mad/nc_files/machine_config.ngc /tmp/jd2/mad/nc_files/
-
-exit 0
