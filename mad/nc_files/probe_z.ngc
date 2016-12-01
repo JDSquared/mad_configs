@@ -7,14 +7,14 @@
 (p Ignore electrical probe if 1.0)
 
 O<probe_z> sub
-    #<oldfeed>=#<_feed>
-    #<oldabs>=#<_incremental>
+	#<oldfeed>=#<_feed>
+	#<oldabs>=#<_incremental>
 	#<wcord>=#5220
 	#<zoff>=0.0
 	#<zt>=0.0
 
-    G90 (Probing starts in absolute)
-    G49
+	G90 (Probing starts in absolute)
+	G49
 
 	M66 P3 L0 (Check if the Electrical Probe is overridden)
 	O100 if [#5399 NE 1.0]
@@ -38,15 +38,13 @@ O<probe_z> sub
 	(true before calling probe cycle)
 	M66 P0 L0
 	O125 if [#5399 EQ 1.0]
-		(ERR, Ohmic probe already tripped before cycle!)
-		M65 P0 (Turn off e-probe before exiting)		
-		o<probe_z> return [1]	
+		M65 P0 (Turn off e-probe before exiting)	
+		(ABORT, Ohmic probe already tripped before cycle!)	
 	O125 else
 		M66 P1 L0
 		O130 if[#5399 EQ 1.0]
-			(MSG, Error! Switch probe already tripped before cycle!)
 			M65 P0 (Turn off e-probe before exiting)
-			o<probe_z> return [1]
+			(ABORT, Switch probe already tripped before cycle!)
 		O130 endif	
 	O125 endif	
 
@@ -57,63 +55,59 @@ O<probe_z> sub
 	G38.3 Z#<tz>
 
 	(Check for successful probe)
-    O150 if [#5070 NE 1.0]
-        M65 P0 (Done with eprobe, disconnect)
-        (MSG, Error! Probe failed to find stock!)
-        o<probe_z> return [1]
-    O150 endif
+	O150 if [#5070 NE 1.0]
+		M65 P0 (Done with eprobe, disconnect)
+		(ABORT, Probe failed to find stock!)
+	O150 endif
 
-    (We hit the stock. Get the right offset cal value)
-    M66 P0 L0
-    O200 if [#5399 EQ 1.0]
-        #<zoff>= #<_eprobe_cal> (E-Probe touched)
-    O200 else
-        M66 P1 L0
-        O210 if [#5399 EQ 1.0]
-            #<zoff>= #<_swprobe_cal> (Switch Probe touched)
-        O210 else
+	(We hit the stock. Get the right offset cal value)
+	M66 P0 L0
+	O200 if [#5399 EQ 1.0]
+		#<zoff>= #<_eprobe_cal> (E-Probe touched)
+	O200 else
+		M66 P1 L0
+		O210 if [#5399 EQ 1.0]
+			#<zoff>= #<_swprobe_cal> (Switch Probe touched)
+		O210 else
 			(Neither are true, but the probe succeeded?)
-            M65 P0 (Done with eprobe, disconnect)
-            (MSG, Error! Probe failed to find stock checking pin values!)
-            o<probe_z> return [1]
-        O210 endif
-    O200 endif
+			M65 P0 (Turn off e-probe before exiting)	
+			(ABORT, Probe failed to find stock checking pin values!)
+		O210 endif
+	O200 endif
 
 	(Make sure Z has travel for probe move)
-    #<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
-    O250 if [#<tz> GT #<maxz>]
-        M65 P0 (Done with eprobe, disconnect)
-        (MSG, Error! Probe move over travels Z! Check for debris or water?)
-        o<probe_z> return [1]
-    O250 endif
+	#<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
+	O250 if [#<tz> GT #<maxz>]
+		M65 P0 (Turn off e-probe before exiting)
+		(ABORT, Probe move over travels Z!\r\nCheck for debris or water?)
+	O250 endif
 
 	(Probe up at low speed to latch height)
-    F#<_probe_lfeed> 
-    G38.5 Z#<tz>
+	F#<_probe_lfeed> 
+	G38.5 Z#<tz>
 	
 	(Check for a good probe result)
-    O300 if [#5070 NE 1.0]
-        M65 P0 (Done with eprobe, disconnect)
-        (MSG, Error! Probe failure on upstroke!)
-        o<probe_z> return [1]
-    O300 endif
+	O300 if [#5070 NE 1.0]
+		M65 P0 (Turn off e-probe before exiting)
+		(ABORT, Error! Probe failure on upstroke!)
+	O300 endif
 
-    (Set the Z Work to the proper location)
-    G10 L2 P#5220 Z[#5063 + #<zoff>] (#5383 should be zero)
+	(Set the Z Work to the proper location)
+	G10 L2 P#5220 Z[#5063 + #<zoff>] (#5383 should be zero)
 
-    M65 P0 (Done with eprobe, disconnect)
+	M65 P0 (Done with eprobe, disconnect)
 
-    (Restore old feed rate)
+	(Restore old feed rate)
 	F#<oldfeed>
 
-    G90 G00 Z#<Z> (Rapid to requested height)
+	G90 G00 Z#<Z> (Rapid to requested height)
 
-    (Restore the old positioning mode)
-    O350 if [#<oldabs> EQ 1]
-        G91
-    O350 endif
-
-	O<probe_z> return [0]
+	(Restore the old positioning mode)
+	O350 if [#<oldabs> EQ 1]
+		G91
+	O350 endif
 O<probe_z> endsub
 
-o<probe_z> return [1] (If we ever get here stop the program execution)
+ (If we ever get here stop the program execution)
+M2
+
