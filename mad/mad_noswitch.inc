@@ -25,7 +25,7 @@ COMM_WAIT = 0.010
 SERVO_PERIOD = 1000000
 
 [HAL]
-HALFILE = mad.hal
+HALFILE = mad_noswitch.hal
 
 [TRAJ]
 AXES = 3
