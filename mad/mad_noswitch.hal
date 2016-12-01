@@ -76,7 +76,7 @@ setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxvel           [AXIS_0]STEPGEN_MAXVE
 # Home and min limit for X axis are same signal - No max switch #
 setp hm2_[HOSTMOT2](BOARD).0.gpio.017.is_output false
 net x-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.017.in
-net x-home	=> axis.0.home-sw-in
+#net x-home	=> axis.0.home-sw-in
 #net x-home 	=> axis.0.neg-lim-sw-in
 
 #*******************
@@ -142,7 +142,7 @@ net y-pos-cmd =>  hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-cmd
 # Home and max limit for Y axis are same signal - No min switch #
 setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output false
 net y-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.018.in
-net y-home	=> axis.1.home-sw-in
+#net y-home	=> axis.1.home-sw-in
 #net y-home	=> axis.1.pos-lim-sw-in
 
 #*******************
@@ -179,7 +179,7 @@ setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxvel           [AXIS_2]STEPGEN_MAXVE
 # Home and min limit for X axis are same signal - No max switch #
 setp hm2_[HOSTMOT2](BOARD).0.gpio.019.is_output false
 net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.019.in
-net z-home	=> axis.2.home-sw-in
+#net z-home	=> axis.2.home-sw-in
 #net z-home	=> axis.2.neg-lim-sw-in
 
 #*******************
@@ -221,7 +221,8 @@ net estop-loopout iocontrol.0.emc-enable-in <= estop_latch.0.ok-out
 net estop-loopin iocontrol.0.user-enable-out => estop_latch.0.ok-in
 net estop-reset iocontrol.0.user-request-enable => estop_latch.0.reset
 net remote-estop <= hm2_[HOSTMOT2](BOARD).0.gpio.029.in
-net remote-estop => estop_latch.0.fault-in
+#net remote-estop => estop_latch.0.fault-in
+sets estop_latch.0.fault-in false
 net tbreak-override => hm2_[HOSTMOT2](BOARD).0.gpio.030.out
 
 # THC
@@ -305,12 +306,3 @@ net thc-correction-kd => thc-settings.thc-correction-kd
 net thc-plasma-divisor => thc-settings.thc-plasma-divisor
 net thc-range-sel => thc-settings.thc-range-sel
 net thc-has-arc-ok => thc-settings.thc-has-arc-ok
-
-#sets thc-vel-tol 0.75
-#sets thc-volt-tol 0.25
-#sets thc-correction-kp 0.005
-#sets thc-correction-kd 0.0025
-#sets thc-plasma-divisor 50.0
-#sets thc-range-sel 10
-#sets thc-has-arc-ok true
-
