@@ -14,6 +14,7 @@ TASK = milltask
 CYCLE_TIME = 0.010
 
 [RS274NGC]
+FEATURES=12
 PARAMETER_FILE = mad.var
 SUBROUTINE_PATH = ~/jd2/mad/nc_files/
 REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
