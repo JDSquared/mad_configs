@@ -30,12 +30,30 @@ O<probe_z> sub
 	O100 endif
 
 	(Get the machine coordinates of our work offset in Z)
-	#<wz>=#[5203 + [#<wcord> * 20] 	
+	#<wz>=#[5203 + [#<wcord> * 20]] 	
 	#<maxz>=[-1 * #<wz>]
+
+	(Check for a positive probe signal)
+	(It is an error if the probe is already)
+	(true before calling probe cycle)
+	M66 P0 L0
+	O125 if [#5399 EQ 1.0]
+		(MSG, Error! Ohmic probe already tripped before cycle!)
+		M65 P0 (Turn off e-probe before exiting)		
+		M2	
+	O125 else
+		M66 P1 L0
+		O130 if[#5399 EQ 1.0]
+			(MSG, Error! Switch probe already tripped before cycle!)
+		O130 endif	
+		M65 P0 (Turn off e-probe before exiting)
+		M2
+	O125 endif	
 
 	(Probe down first at high speed - target max machine travel)
 	#<tz>=[-3.625 - #<wz>]
 	F#<_probe_hfeed>
+
 	G38.3 Z#<tz>
 
 	(Check for successful probe)
