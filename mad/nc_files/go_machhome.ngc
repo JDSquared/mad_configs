@@ -1,9 +1,0 @@
-O<go_machhome> sub
-
-G90
-G53 G00 Z0.0
-G53 G00 X0.0 Y0.0
-
-O<go_machhome> endsub
-
-M2 (If we ever get here stop the program execution)

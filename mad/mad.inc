@@ -15,8 +15,8 @@ CYCLE_TIME = 0.010
 
 [RS274NGC]
 PARAMETER_FILE = mad.var
-PROGRAM_PREFIX = ~/jd2/mad/nc_files/
 SUBROUTINE_PATH = ~/jd2/mad/nc_files/
+REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 
 [EMCMOT]
 EMCMOT = motmod

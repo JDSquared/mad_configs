@@ -222,7 +222,7 @@ net estop-loopin iocontrol.0.user-enable-out => estop_latch.0.ok-in
 net estop-reset iocontrol.0.user-request-enable => estop_latch.0.reset
 net remote-estop <= hm2_[HOSTMOT2](BOARD).0.gpio.029.in
 #net remote-estop => estop_latch.0.fault-in
-sets estop_latch.0.fault-in false
+setp estop_latch.0.fault-in false
 net tbreak-override => hm2_[HOSTMOT2](BOARD).0.gpio.030.out
 
 # THC

@@ -1,0 +1,52 @@
+O<safe_go> sub
+	(This routine moves the Z to machine home)
+	(then moves to XYA position in work coordinates)
+	(and finally moves to Z in work coordinates)
+	(All parameters except C are optional)
+	(P Work Coordinate G-Number 54, 55, etc.)
+	(x X desired position)
+	(y Y desired position)
+	(z Z desired position)
+	(a A desired position)
+
+	G40 G90 (Absolute Move, no cutter compensation)
+	G53 G00 Z0.0 (Move Z head to home)
+
+	(Move cases)
+	o100 if [EXISTS[#<x>]]
+		o101 if[EXISTS[#<y>]]
+			o102 if[EXISTS[#<a>]]
+				(X Y and A)
+				G#<P> G00 X#<x> Y#<y> A#<a>
+			o102 else
+				(X and Y)
+				G#<P> G00 X#<x> Y#<y>
+			o102 endif
+		o101 elseif [EXISTS[#<a>]]
+			(X and A)
+			G#<P> G00 X#<x> A#<a>
+		o101 else
+			(Only X)
+			G#<P> G00 X#<x>
+		o101 endif
+	o100 elseif [EXISTS[#<y>]]
+		o105 if[EXISTS[#<a>]]
+			(Y and A)
+			G#<P> G00 Y#<y> A<#a>
+		o105 else
+			(Only Y)
+			G#<P> G00 Y#<y>
+		o105 endif
+	o100 elseif [EXISTS[#<a>]]
+		(Only A)
+		G#<P> G00 A#<a>
+	o100 endif
+
+	(If Z was provided, move it last)
+	o110 if[EXISTS[#<z>]]
+		G#<P> G00 Z#<z>
+	o110 endif
+
+O<safe_go> endsub
+
+M2 (If we ever get here stop the program execution)
