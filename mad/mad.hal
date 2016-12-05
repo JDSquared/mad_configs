@@ -269,6 +269,7 @@ newpin gui-thc gui-thc.tbreak bit in
 newpin gui-thc gui-thc.elprobe-override bit out
 newpin gui-thc gui-thc.thc-lockout bit out
 newpin gui-thc gui-thc.torch-on-man bit out
+newpin gui-thc gui-thc.thc-enabled bit in
 ready gui-thc
 
 net torchon => gui-thc.torch-led
@@ -278,6 +279,7 @@ net tbreak-override => gui-thc.tbreak-override
 net thc-volt-off => gui-thc.btint-voltoff
 net thc-dry-run <= gui-thc.btint-dryrun
 net arcok => gui-thc.thc-arcok
+net thcon => gui-thc.thc-enabled
 net estop-in => gui-thc.estop
 net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
