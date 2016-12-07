@@ -22,6 +22,9 @@ newinst [HOSTMOT2](DRIVER) [HOSTMOT2](DEVNAME) config=[HOSTMOT2](CONFIG)
 # The torch interface component - must be after fpga loads
 loadrt btint_thc name=btint_axi0
 
+# The ioexpander component - must be after fpga loads
+loadrt jd2_ioexpander name=jd2_ioexp_axi1
+
 # E-Stop
 loadrt estop_latch
 
