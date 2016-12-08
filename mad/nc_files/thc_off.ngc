@@ -1,4 +1,4 @@
-(Remap subroutine to turn on THC)
+(Remap subroutine to turn off THC)
 O<thc_off> sub
 M63 P1
 O<thc_off> endsub

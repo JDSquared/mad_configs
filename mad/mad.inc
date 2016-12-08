@@ -23,6 +23,12 @@ REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
+REMAP=M120 modalgroup=10 ngc=scribe_on
+REMAP=M121 modalgroup=10 ngc=scribe_off
+REMAP=M110 modalgroup=10 ngc=router_on
+REMAP=M111 modalgroup=10 ngc=router_off
+REMAP=M112 modalgroup=10 ngc=air_handler_on
+REMAP=M113 modalgroup=10 ngc=air_handler_off
 
 [EMCMOT]
 EMCMOT = motmod

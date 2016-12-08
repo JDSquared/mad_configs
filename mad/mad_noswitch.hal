@@ -23,7 +23,7 @@ newinst [HOSTMOT2](DRIVER) [HOSTMOT2](DEVNAME) config=[HOSTMOT2](CONFIG)
 loadrt btint_thc name=btint_axi0
 
 # The ioexpander component - must be after fpga loads
-loadrt jd2_ioexpander name=jd2_ioexp_axi1
+loadrt jd2_ioexp name=jd2_ioexp_axi1
 
 # E-Stop
 loadrt estop_latch
@@ -34,6 +34,9 @@ addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread
 
 # Torch height function
 addf btint_thc.0.update                    servo-thread
+
+# IO Expander function
+addf jd2_ioexp.0.update                    servo-thread
 
 # The E-Stop latch function
 addf estop_latch.0                         servo-thread
@@ -259,6 +262,15 @@ net thc-range-sel => btint_thc.0.range-sel # Default 10
 net thc-has-arc-ok => btint_thc.0.has-arc-ok # Default true
 net thc-lockout => btint_thc.0.lockout
 
+# IO Expander
+net laser-en => jd2_ioexp.0.laser-en
+net scribe-en => jd2_ioexp.0.output.0
+net scribe-en => motion.digital-out-02
+net router-on => jd2_ioexp.0.output.2
+net router-on => motion.digital-out-03
+net air-handler-en => jd2_ioexp.0.output.3
+net air-handler-en => motion.digital-out-04
+
 # GUI Components
 newcomp gui-thc
 newpin gui-thc gui-thc.torch-led bit in
@@ -274,6 +286,7 @@ newpin gui-thc gui-thc.elprobe-override bit out
 newpin gui-thc gui-thc.thc-lockout bit out
 newpin gui-thc gui-thc.torch-on-man bit out
 newpin gui-thc gui-thc.thc-enabled bit in
+newpin gui-thc gui-thc.laser-en bit out
 ready gui-thc
 
 net torchon => gui-thc.torch-led
@@ -289,6 +302,7 @@ net tbreak-in => gui-thc.tbreak
 net el-probe-over => gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
+net laser-en <= gui-thc.laser-en
 
 newcomp thc-settings
 newpin thc-settings thc-settings.thc-vel-tol float out
