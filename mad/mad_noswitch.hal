@@ -10,7 +10,7 @@ loadrt trivkins
 # trajectory planner
 loadrt tp
 
-loadrt [EMCMOT]EMCMOT num_joints=[TRAJ]AXES servo_period_nsec=0
+loadrt [EMCMOT]EMCMOT num_joints=[TRAJ]AXES num_dio=[EMCMOT]NUM_DIO servo_period_nsec=0
 
 # hostmot2 parent driver
 loadrt hostmot2 irq_period_nsec=1000000
