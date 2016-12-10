@@ -20,7 +20,7 @@ args = parser.parse_args()
 configName = args.config[0]
 
 launcher.register_exit_handler()
-launcher.set_debug_level(5)
+launcher.set_debug_level(0)
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 if not os.path.isfile(configName):

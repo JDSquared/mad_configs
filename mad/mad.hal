@@ -109,7 +109,7 @@ setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output false
 net y1-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.004.in
 net y2-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.008.in
 net y-fault 	<= hm2_[HOSTMOT2](BOARD).0.gpio.016.in
-net y1-fault 	=> axis.1.amp-fault-in
+net y-fault 	=> axis.1.amp-fault-in
 
 # Step Gen signals/setup
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirsetup        [AXIS_1]DIRSETUP
