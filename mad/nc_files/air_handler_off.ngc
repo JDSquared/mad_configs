@@ -1,6 +1,6 @@
 (Remap subroutine to turn off Air Handler)
 O<air_handler_off> sub
-M65 P4
+M65 P5
 O<air_handler_off> endsub
 
 M2 (If we ever get here stop the program execution)

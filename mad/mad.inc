@@ -21,6 +21,8 @@ REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
+REMAP=M102 modalgroup=10 ngc=arm_probe
+REMAP=M103 modalgroup=10 ngc=disarm_probe
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
 REMAP=M120 modalgroup=10 ngc=scribe_on
@@ -35,7 +37,7 @@ EMCMOT = motmod
 COMM_TIMEOUT = 1.0
 COMM_WAIT = 0.010
 SERVO_PERIOD = 1000000
-NUM_DIO = 6
+NUM_DIO = 8
 
 [HAL]
 HALFILE = mad.hal

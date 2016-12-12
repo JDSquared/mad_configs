@@ -25,6 +25,11 @@ O<probe_z> sub
 		O101 endif
 	O100 endif
 
+	(Latch the current probe states)
+	M102
+	G04 P0.1
+	M103
+
 	(Get the machine coordinates of our work offset in Z)
 	#<wz>=#[5203 + [#<wcord> * 20]] 	
 	#<maxz>=[-1 * #<wz>]
@@ -42,6 +47,9 @@ O<probe_z> sub
 		O130 endif	
 	O125 endif	
 
+	(Arm the probe)
+	M102
+
 	(Probe down first at high speed - target max machine travel)
 	#<tz>=[0.99 * #<_ini[AXIS_2]min_limit> - #<wz>]
 	F#<_hal[probe-hfeed]>
@@ -51,6 +59,7 @@ O<probe_z> sub
 	(Check for successful probe)
 	O150 if [#5070 NE 1.0]
 		M101 (Done with eprobe, disconnect)
+		M103 (Turn off probe latch)
 		(ABORT, Probe failed to find stock!)
 	O150 endif
 
@@ -63,6 +72,7 @@ O<probe_z> sub
 		O210 else
 			(Neither are true, but the probe succeeded?)
 			M101 (Turn off e-probe before exiting)	
+			M103 (Turn off probe latch)
 			(ABORT, Probe failed to find stock checking pin values!)
 		O210 endif
 	O200 endif
@@ -71,6 +81,7 @@ O<probe_z> sub
 	#<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
 	O250 if [#<tz> GT #<maxz>]
 		M101 (Turn off e-probe before exiting)
+		M103 (Turn off probe latch)
 		(ABORT, Probe move over travels positive Z!\r\nCheck for debris or water?)
 	O250 endif
 
@@ -81,6 +92,7 @@ O<probe_z> sub
 	(Check for a good probe result)
 	O300 if [#5070 NE 1.0]
 		M101 (Turn off e-probe before exiting)
+		M103 (Turn off probe latch)
 		(ABORT, Error! Probe failure on upstroke!)
 	O300 endif
 
@@ -88,6 +100,7 @@ O<probe_z> sub
 	G10 L2 P#5220 Z[#<wz> + #5063 + #<zoff>] (#5383 should be zero)
 
 	M101 (Done with eprobe, disconnect)
+	M103 (Turn off probe latch)
 
 	(Restore old feed rate)
 	F#<oldfeed>

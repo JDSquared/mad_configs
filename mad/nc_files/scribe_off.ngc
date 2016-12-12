@@ -1,6 +1,6 @@
 (Remap subroutine to turn off Scribe)
 O<scribe_off> sub
-M65 P2
+M65 P3
 O<scribe_off> endsub
 
 M2 (If we ever get here stop the program execution)

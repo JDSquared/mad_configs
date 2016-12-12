@@ -195,10 +195,15 @@ net z-home	=> axis.2.home-sw-in
 setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output false
 setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output false
 setp hm2_[HOSTMOT2](BOARD).0.gpio.031.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.036.is_output true
+setp hm2_[HOSTMOT2](BOARD).0.gpio.037.is_output true
 net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.024.in
 net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
 net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
-net probe-in	=>  motion.probe-input
+net probe-in	=> motion.probe-input
+net arm-probe   => hm2_[HOSTMOT2](BOARD).0.gpio.036.out
+net arm-probe   <= motion.digital-out-02
+net el-probe-over => hm2_[HOSTMOT2](BOARD).0.gpio.037.out
 
 # Electric probe control pin is dio 0
 net el-probe-ctrl	<= motion.digital-out-00
@@ -264,11 +269,11 @@ net thc-lockout => btint_thc.0.lockout
 # IO Expander
 net laser-en => jd2_ioexp.0.laser-en
 net scribe-en => jd2_ioexp.0.output.0
-net scribe-en => motion.digital-out-02
+net scribe-en => motion.digital-out-03
 net router-on => jd2_ioexp.0.output.2
-net router-on => motion.digital-out-03
+net router-on => motion.digital-out-04
 net air-handler-en => jd2_ioexp.0.output.3
-net air-handler-en => motion.digital-out-04
+net air-handler-en => motion.digital-out-05
 
 # GUI Components
 newcomp gui-thc
@@ -298,7 +303,7 @@ net arcok => gui-thc.thc-arcok
 net thcon => gui-thc.thc-enabled
 net estop-in => gui-thc.estop
 net tbreak-in => gui-thc.tbreak
-net el-probe-over => gui-thc.elprobe-override
+net el-probe-over <= gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
 net laser-en <= gui-thc.laser-en

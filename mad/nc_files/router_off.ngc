@@ -1,6 +1,6 @@
 (Remap subroutine to turn off Router)
 O<router_off> sub
-M65 P3
+M65 P4
 O<router_off> endsub
 
 M2 (If we ever get here stop the program execution)

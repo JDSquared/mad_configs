@@ -1,0 +1,6 @@
+(Remap subroutine to disarm the probe latch)
+O<disarm_probe> sub
+M65 P2
+O<disarm_probe> endsub
+
+M2 (If we ever get here stop the program execution)
