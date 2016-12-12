@@ -25,9 +25,11 @@ O<probe_z> sub
 		O101 endif
 	O100 endif
 
-	(Latch the current probe states)
+	(Jiggle the latch state)
+	M103
+	G04 P0.01
 	M102
-	G04 P0.1
+	G04 P0.01
 	M103
 
 	(Get the machine coordinates of our work offset in Z)
@@ -63,6 +65,9 @@ O<probe_z> sub
 		(ABORT, Probe failed to find stock!)
 	O150 endif
 
+	(Advance the probe latch state)
+	M103
+
 	(We hit the stock. Get the right offset cal value)
 	O200 if [#<_hal[el-probe]> EQ 1.0]
 		#<zoff>= #<_hal[probe-el-off]>  (E-Probe touched)
@@ -84,6 +89,9 @@ O<probe_z> sub
 		M103 (Turn off probe latch)
 		(ABORT, Probe move over travels positive Z!\r\nCheck for debris or water?)
 	O250 endif
+
+	(Arm latch for upstroke)
+	M102
 
 	(Probe up at low speed to latch height)
 	F#<_hal[probe-lfeed]>
