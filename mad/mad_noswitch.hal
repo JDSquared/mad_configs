@@ -66,7 +66,7 @@ net x-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.00.enable
 # Fault signal
 setp hm2_[HOSTMOT2](BOARD).0.gpio.000.is_output false
 net x-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.000.in
-net x-fault 	=> axis.0.amp-fault-in
+#net x-fault 	=> axis.0.amp-fault-in
 
 # Step Gen signals/setup
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.dirsetup        [AXIS_0]DIRSETUP
@@ -109,7 +109,7 @@ setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output false
 net y1-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.004.in
 net y2-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.008.in
 net y-fault 	<= hm2_[HOSTMOT2](BOARD).0.gpio.016.in
-net y1-fault 	=> axis.1.amp-fault-in
+#net y-fault 	=> axis.1.amp-fault-in
 
 # Step Gen signals/setup
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.01.dirsetup        [AXIS_1]DIRSETUP
@@ -169,7 +169,7 @@ net z-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.03.enable
 # Fault signal
 setp hm2_[HOSTMOT2](BOARD).0.gpio.012.is_output false
 net z-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.012.in
-net z-fault 	=> axis.2.amp-fault-in
+#net z-fault 	=> axis.2.amp-fault-in
 
 # Step Gen signals/setup
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.dirsetup        [AXIS_2]DIRSETUP
@@ -195,10 +195,15 @@ net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.019.in
 setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output false
 setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output false
 setp hm2_[HOSTMOT2](BOARD).0.gpio.031.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.036.is_output true
+setp hm2_[HOSTMOT2](BOARD).0.gpio.037.is_output true
 net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.024.in
 net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
 net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
-net probe-in	=>  motion.probe-input
+net probe-in	=> motion.probe-input
+net arm-probe   => hm2_[HOSTMOT2](BOARD).0.gpio.036.out
+net arm-probe   <= motion.digital-out-02
+net el-probe-over => hm2_[HOSTMOT2](BOARD).0.gpio.037.out
 
 # Electric probe control pin is dio 0
 net el-probe-ctrl	<= motion.digital-out-00
@@ -264,12 +269,22 @@ net thc-lockout => btint_thc.0.lockout
 
 # IO Expander
 net laser-en => jd2_ioexp.0.laser-en
-net scribe-en => jd2_ioexp.0.output.0
-net scribe-en => motion.digital-out-02
-net router-on => jd2_ioexp.0.output.2
-net router-on => motion.digital-out-03
-net air-handler-en => jd2_ioexp.0.output.3
-net air-handler-en => motion.digital-out-04
+net out1-ctrl => jd2_ioexp.0.output.0
+net out1-ctrl => motion.digital-out-03
+net out2-ctrl => jd2_ioexp.0.output.1
+net out2-ctrl => motion.digital-out-04
+net out3-ctrl => jd2_ioexp.0.output.2
+net out3-ctrl => motion.digital-out-05
+net out4-ctrl => jd2_ioexp.0.output.3
+net out4-ctrl => motion.digital-out-06
+net out5-ctrl => jd2_ioexp.0.output.4
+net out5-ctrl => motion.digital-out-07
+net out6-ctrl => jd2_ioexp.0.output.5
+net out6-ctrl => motion.digital-out-08
+net out7-ctrl => jd2_ioexp.0.output.6
+net out7-ctrl => motion.digital-out-09
+net out8-ctrl => jd2_ioexp.0.output.7
+net out8-ctrl => motion.digital-out-10
 
 # GUI Components
 newcomp gui-thc
@@ -299,7 +314,7 @@ net arcok => gui-thc.thc-arcok
 net thcon => gui-thc.thc-enabled
 net estop-in => gui-thc.estop
 net tbreak-in => gui-thc.tbreak
-net el-probe-over => gui-thc.elprobe-override
+net el-probe-over <= gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
 net laser-en <= gui-thc.laser-en
@@ -333,4 +348,22 @@ net probe-hfeed <= probe-settings.high-feed
 net probe-lfeed <= probe-settings.low-feed
 net probe-el-off <= probe-settings.el-cal-off
 net probe-sw-off <= probe-settings.sw-cal-off
+
+newcomp gui-consum
+newpin gui-consum gui-consum.cut-voltage float out
+newpin gui-consum gui-consum.cut-feed float out
+newpin gui-consum gui-consum.cut-height float out
+newpin gui-consum gui-consum.pierce-height float out
+newpin gui-consum gui-consum.pierce-delay float out
+newpin gui-consum gui-consum.rapid-height float out
+newpin gui-consum gui-consum.probe-r-plane float out
+ready gui-consum
+
+net cut-voltage 	<= gui-consum.cut-voltage
+net cut-feed 		<= gui-consum.cut-feed
+net cut-height 		<= gui-consum.cut-height
+net pierce-height 	<= gui-consum.pierce-height
+net pierce-delay 	<= gui-consum.pierce-delay
+net rapid-height	<= gui-consum.rapid-height
+net probe-r-plane	<= gui-consum.probe-r-plane
 

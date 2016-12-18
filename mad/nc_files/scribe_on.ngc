@@ -1,7 +1,0 @@
-(Remap subroutine to turn on Scribe)
-O<scribe_on> sub
-M64 P3
-O<scribe_on> endsub
-
-M2 (If we ever get here stop the program execution)
-

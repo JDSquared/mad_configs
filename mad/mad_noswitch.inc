@@ -21,21 +21,34 @@ REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
+REMAP=M102 modalgroup=10 ngc=arm_probe
+REMAP=M103 modalgroup=10 ngc=disarm_probe
+REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
-REMAP=M120 modalgroup=10 ngc=scribe_on
-REMAP=M121 modalgroup=10 ngc=scribe_off
-REMAP=M110 modalgroup=10 ngc=router_on
-REMAP=M111 modalgroup=10 ngc=router_off
-REMAP=M112 modalgroup=10 ngc=air_handler_on
-REMAP=M113 modalgroup=10 ngc=air_handler_off
+REMAP=M150 modalgroup=10 argspec=p ngc=out1_on
+REMAP=M151 modalgroup=10 argspec=p ngc=out1_off
+REMAP=M152 modalgroup=10 argspec=p ngc=out2_on
+REMAP=M153 modalgroup=10 argspec=p ngc=out2_off
+REMAP=M154 modalgroup=10 argspec=p ngc=out3_on
+REMAP=M155 modalgroup=10 argspec=p ngc=out3_off
+REMAP=M156 modalgroup=10 argspec=p ngc=out4_on
+REMAP=M157 modalgroup=10 argspec=p ngc=out4_off
+REMAP=M158 modalgroup=10 argspec=p ngc=out5_on
+REMAP=M159 modalgroup=10 argspec=p ngc=out5_off
+REMAP=M160 modalgroup=10 argspec=p ngc=out6_on
+REMAP=M161 modalgroup=10 argspec=p ngc=out6_off
+REMAP=M162 modalgroup=10 argspec=p ngc=out7_on
+REMAP=M163 modalgroup=10 argspec=p ngc=out7_off
+REMAP=M164 modalgroup=10 argspec=p ngc=out8_on
+REMAP=M165 modalgroup=10 argspec=p ngc=out8_off
 
 [EMCMOT]
 EMCMOT = motmod
 COMM_TIMEOUT = 1.0
 COMM_WAIT = 0.010
 SERVO_PERIOD = 1000000
-NUM_DIO = 6
+NUM_DIO = 12
 
 [HAL]
 HALFILE = mad_noswitch.hal

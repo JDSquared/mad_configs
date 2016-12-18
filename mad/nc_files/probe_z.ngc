@@ -23,6 +23,8 @@ O<probe_z> sub
 		O101 else
 			M100 (Default probe on if no P word)
 		O101 endif
+	O100 else
+		M101 (Turn off if overridden)
 	O100 endif
 
 	(Jiggle the latch state)

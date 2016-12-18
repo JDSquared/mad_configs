@@ -1,7 +1,0 @@
-(Remap subroutine to turn on Router)
-O<router_on> sub
-M64 P4
-O<router_on> endsub
-
-M2 (If we ever get here stop the program execution)
-

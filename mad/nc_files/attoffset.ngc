@@ -1,0 +1,20 @@
+(Remap subroutine to change offset for attachment locations)
+(P is the attachment tool number)
+
+O<attoffset> sub
+	(The primary dock is zero offset, torch, router, etc.)
+	(The offsets are coming from the hal with names)
+	(att1XOff, att1YOff, att1ZOff, att2XOff, etc.)
+	
+	(Clear any existing offset)	
+	G92.1
+
+	(Apply the new offset if required)
+	O101 if[#<P> EQ 2.0]
+		G92 X[#<_x> + #<_hal[att1OffX]>] Y[#<_y> + #<_hal[att1OffY]>] Z[#<_z> + #<_hal[att1OffZ]>]
+	O101 endif
+
+O<attoffset> endsub
+
+M2 (If we ever get here stop the program execution)
+

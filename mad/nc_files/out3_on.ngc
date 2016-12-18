@@ -1,0 +1,18 @@
+(Remap subroutine to turn on output 3)
+(P is 0 for synchronized output, immediate otherwise)
+O<out3_on> sub
+
+	O101 if [EXISTS[#<p>]] (Check if selecting output synchronization type)
+		O102 if[#<p> NE 0]
+			M64 P5
+		O102 else
+			M62 P5
+		O102 endif
+	O101 else
+		M62 P5 (Default to motion synchronized)
+	O101 endif
+
+O<out3_on> endsub
+
+M2 (If we ever get here stop the program execution)
+

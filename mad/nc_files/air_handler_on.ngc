@@ -1,7 +1,0 @@
-(Remap subroutine to turn on Air Handler)
-O<air_handler_on> sub
-M64 P5
-O<air_handler_on> endsub
-
-M2 (If we ever get here stop the program execution)
-

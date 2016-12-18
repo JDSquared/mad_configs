@@ -268,12 +268,22 @@ net thc-lockout => btint_thc.0.lockout
 
 # IO Expander
 net laser-en => jd2_ioexp.0.laser-en
-net scribe-en => jd2_ioexp.0.output.0
-net scribe-en => motion.digital-out-03
-net router-on => jd2_ioexp.0.output.2
-net router-on => motion.digital-out-04
-net air-handler-en => jd2_ioexp.0.output.3
-net air-handler-en => motion.digital-out-05
+net out1-ctrl => jd2_ioexp.0.output.0
+net out1-ctrl => motion.digital-out-03
+net out2-ctrl => jd2_ioexp.0.output.1
+net out2-ctrl => motion.digital-out-04
+net out3-ctrl => jd2_ioexp.0.output.2
+net out3-ctrl => motion.digital-out-05
+net out4-ctrl => jd2_ioexp.0.output.3
+net out4-ctrl => motion.digital-out-06
+net out5-ctrl => jd2_ioexp.0.output.4
+net out5-ctrl => motion.digital-out-07
+net out6-ctrl => jd2_ioexp.0.output.5
+net out6-ctrl => motion.digital-out-08
+net out7-ctrl => jd2_ioexp.0.output.6
+net out7-ctrl => motion.digital-out-09
+net out8-ctrl => jd2_ioexp.0.output.7
+net out8-ctrl => motion.digital-out-10
 
 # GUI Components
 newcomp gui-thc
@@ -338,4 +348,21 @@ net probe-lfeed <= probe-settings.low-feed
 net probe-el-off <= probe-settings.el-cal-off
 net probe-sw-off <= probe-settings.sw-cal-off
 
+newcomp gui-consum
+newpin gui-consum gui-consum.cut-voltage float out
+newpin gui-consum gui-consum.cut-feed float out
+newpin gui-consum gui-consum.cut-height float out
+newpin gui-consum gui-consum.pierce-height float out
+newpin gui-consum gui-consum.pierce-delay float out
+newpin gui-consum gui-consum.rapid-height float out
+newpin gui-consum gui-consum.probe-r-plane float out
+ready gui-consum
+
+net cut-voltage 	<= gui-consum.cut-voltage
+net cut-feed 		<= gui-consum.cut-feed
+net cut-height 		<= gui-consum.cut-height
+net pierce-height 	<= gui-consum.pierce-height
+net pierce-delay 	<= gui-consum.pierce-delay
+net rapid-height	<= gui-consum.rapid-height
+net probe-r-plane	<= gui-consum.probe-r-plane
 
