@@ -182,11 +182,11 @@ setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.control-type     0
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxaccel         [AXIS_2]STEPGEN_MAXACCEL
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxvel           [AXIS_2]STEPGEN_MAXVEL
 
-# Home and min limit for X axis are same signal - No max switch #
+# Home and max limit for Z axis are same signal - No min switch #
 setp hm2_[HOSTMOT2](BOARD).0.gpio.019.is_output false
 net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.019.in
 net z-home	=> axis.2.home-sw-in
-#net z-home	=> axis.2.neg-lim-sw-in
+#net z-home	=> axis.2.pos-lim-sw-in
 
 #*******************
 # Z Probes
@@ -201,8 +201,6 @@ net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.024.in
 net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
 net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
 net probe-in	=> motion.probe-input
-net arm-probe   => hm2_[HOSTMOT2](BOARD).0.gpio.036.out
-net arm-probe   <= motion.digital-out-02
 net el-probe-over => hm2_[HOSTMOT2](BOARD).0.gpio.037.out
 
 # Electric probe control pin is dio 0
@@ -246,6 +244,10 @@ net torchon => btint_thc.0.torch-on
 net torchon-man => btint_thc.0.torch-on-man
 net thcon   <= motion.digital-out-01
 net thcon   => btint_thc.0.enable
+net thc-joint-pos-cmd <= axis.2.joint-pos-cmd
+net thc-joint-pos-cmd => btint_thc.0.z-joint-pos-in
+setp btint_thc.0.z-max [AXIS_2](MAX_LIMIT)
+setp btint_thc.0.z-min [AXIS_2](MIN_LIMIT)
 net thc-pos-cmd <= btint_thc.0.z-pos-out
 net thc-pos-in  => btint_thc.0.z-pos-in
 net thc-pos-in  <= axis.2.motor-pos-cmd

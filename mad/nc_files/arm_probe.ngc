@@ -1,6 +1,0 @@
-(Remap subroutine to turn arm probe oneshot)
-O<arm_probe> sub
-M64 P2
-O<arm_probe> endsub
-
-M2 (If we ever get here stop the program execution)

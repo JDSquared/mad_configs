@@ -1,0 +1,9 @@
+(Called when abort happens inside a remapped command)
+
+O<on_abort> sub
+	G40 (Cancel Cutter Comp)
+	G80 (End modal commands)
+O<on_abort> endsub
+
+M2 (If we ever get here stop the program execution)
+

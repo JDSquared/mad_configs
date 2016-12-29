@@ -1,5 +1,5 @@
 o<machine_config> sub
-	G64 P0.003 G92.1 G49
+	G64 P0.003 G92.1 G49 G80
 	M101 (Default Probe OFF)
 	M131 (Default THC OFF)
 o<machine_config> endsub

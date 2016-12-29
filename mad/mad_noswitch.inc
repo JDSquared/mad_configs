@@ -21,8 +21,6 @@ REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
-REMAP=M102 modalgroup=10 ngc=arm_probe
-REMAP=M103 modalgroup=10 ngc=disarm_probe
 REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
@@ -42,6 +40,7 @@ REMAP=M162 modalgroup=10 argspec=p ngc=out7_on
 REMAP=M163 modalgroup=10 argspec=p ngc=out7_off
 REMAP=M164 modalgroup=10 argspec=p ngc=out8_on
 REMAP=M165 modalgroup=10 argspec=p ngc=out8_off
+ON_ABORT_COMMAND=o<on_abort> call
 
 [EMCMOT]
 EMCMOT = motmod
