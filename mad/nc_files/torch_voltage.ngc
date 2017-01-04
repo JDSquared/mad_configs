@@ -1,0 +1,8 @@
+(Remap subroutine to set Torch voltage)
+(P Voltage to assign to THC)
+O<torch_voltage> sub
+M68 E0 Q#<P>
+O<torch_voltage> endsub
+
+M2 (If we ever get here stop the program execution)
+

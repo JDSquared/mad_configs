@@ -3,6 +3,7 @@
 O<on_abort> sub
 	G40 (Cancel Cutter Comp)
 	G80 (End modal commands)
+	M105 P1 (Make extra sure torch is off)
 O<on_abort> endsub
 
 M2 (If we ever get here stop the program execution)

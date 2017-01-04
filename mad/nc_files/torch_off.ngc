@@ -1,6 +1,10 @@
 (Remap subroutine to turn off torch)
 O<torch_off> sub
-M63 P2
+	O101 if [EXISTS[#<p>]] (Check if program wants E-Probe)
+		M65 P2 (Asynchronous turn off)
+	O101 else
+		M63 P2 (Default synchronous turn off)
+	O101 endif
 O<torch_off> endsub
 
 M2 (If we ever get here stop the program execution)
