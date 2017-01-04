@@ -21,6 +21,8 @@ REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
+REMAP=M103 modalgroup=10 ngc=torch_on
+REMAP=M105 modalgroup=10 ngc=torch_off
 REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off

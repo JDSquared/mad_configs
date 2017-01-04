@@ -21,6 +21,8 @@ REMAP=G11 modalgroup=1 argspec=Pxyza ngc=safe_go
 REMAP=G15 modalgroup=1 argspec=Zp ngc=probe_z
 REMAP=M100 modalgroup=10 ngc=el_probe_on
 REMAP=M101 modalgroup=10 ngc=el_probe_off
+REMAP=M103 modalgroup=10 ngc=torch_on
+REMAP=M105 modalgroup=10 ngc=torch_off
 REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
@@ -53,6 +55,12 @@ NUM_DIO = 12
 HALFILE = mad_noswitch.hal
 
 [TRAJ]
+ARC_BLEND_ENABLE = 1
+ARC_BLEND_FALLBACK_ENABLE = 0
+ARC_BLEND_OPTIMIZATION_DEPTH = 50
+ARC_BLEND_GAP_CYCLES = 4
+ARC_BLEND_RAMP_FREQ = 20
+
 AXES = 3
 COORDINATES = X Y Z
 LINEAR_UNITS = in

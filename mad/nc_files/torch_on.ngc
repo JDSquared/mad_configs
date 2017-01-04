@@ -1,0 +1,7 @@
+(Remap subroutine to turn on Torch)
+O<torch_on> sub
+M62 P2
+O<torch_on> endsub
+
+M2 (If we ever get here stop the program execution)
+
