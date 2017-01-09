@@ -12,6 +12,8 @@ O<probe_z> sub
 	G90 (Probing starts in absolute)
 	G49
 
+	M50 P0 (Disable feed override)
+
 	(Check if the Electrical Probe is overridden)
 	O100 if [#<_hal[el-probe-over]> NE 1.0]
 		O101 if [EXISTS[#<p>]] (Check if program wants E-Probe)
@@ -36,10 +38,12 @@ O<probe_z> sub
 	(true before calling probe cycle)
 	O125 if [#<_hal[el-probe]> EQ 1.0]
 		M101 (Turn off e-probe before exiting)	
+		M50 P1 (Enable feed override)
 		(ABORT, Ohmic probe already tripped before cycle!)	
 	O125 else
 		O130 if[#<_hal[sw-probe]> EQ 1.0]
 			M101 (Turn off e-probe before exiting)
+			M50 P1 (Enable feed override)
 			(ABORT, Switch probe already tripped before cycle!)
 		O130 endif	
 	O125 endif	
@@ -53,6 +57,7 @@ O<probe_z> sub
 	(Check for successful probe)
 	O150 if [#5070 NE 1.0]
 		M101 (Done with eprobe, disconnect)
+		M50 P1 (Enable feed override)
 		(ABORT, Probe failed to find stock!)
 	O150 endif
 
@@ -65,6 +70,7 @@ O<probe_z> sub
 		O210 else
 			(Neither are true, but the probe succeeded?)
 			M101 (Turn off e-probe before exiting)	
+			M50 P1 (Enable feed override)
 			(ABORT, Probe failed to find stock checking pin values!)
 		O210 endif
 	O200 endif
@@ -73,6 +79,7 @@ O<probe_z> sub
 	#<tz>=[[#<_metric>*12.7 + #<_imperial>*0.5] + #<_z>]
 	O250 if [#<tz> GT #<maxz>]
 		M101 (Turn off e-probe before exiting)
+		M50 P1 (Enable feed override)
 		(ABORT, Probe move over travels positive Z!\r\nCheck for debris or water?)
 	O250 endif
 
@@ -83,6 +90,7 @@ O<probe_z> sub
 	(Check for a good probe result)
 	O300 if [#5070 NE 1.0]
 		M101 (Turn off e-probe before exiting)
+		M50 P1 (Enable feed override)
 		(ABORT, Error! Probe failure on upstroke!)
 	O300 endif
 
@@ -93,6 +101,7 @@ O<probe_z> sub
 
 	(Restore old feed rate)
 	F#<oldfeed>
+	M50 P1 (Enable feed override)
 
 	G90 G00 Z#<Z> (Rapid to requested height)
 
