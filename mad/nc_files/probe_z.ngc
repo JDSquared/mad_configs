@@ -62,17 +62,10 @@ O<probe_z> sub
 	O150 endif
 
 	(We hit the stock. Get the right offset cal value)
-	O200 if [#<_hal[el-probe]> EQ 1.0]
-		#<zoff>= #<_hal[probe-el-off]>  (E-Probe touched)
+	O200 if [#<_hal[sw-probe]> EQ 1.0]
+		#<zoff>= #<_hal[probe-sw-off]>  (Switch Probe touched)
 	O200 else
-		O210 if [#<_hal[sw-probe]> EQ 1.0]
-			#<zoff>= #<_hal[probe-sw-off]> (Switch Probe touched)
-		O210 else
-			(Neither are true, but the probe succeeded?)
-			M101 (Turn off e-probe before exiting)	
-			M50 P1 (Enable feed override)
-			(ABORT, Probe failed to find stock checking pin values!)
-		O210 endif
+		#<zoff>= #<_hal[probe-el-off]> (E-Probe touched)
 	O200 endif
 
 	(Make sure Z has travel for probe move)
