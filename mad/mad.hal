@@ -22,9 +22,6 @@ newinst [HOSTMOT2](DRIVER) [HOSTMOT2](DEVNAME) config=[HOSTMOT2](CONFIG)
 # The torch interface component - must be after fpga loads
 loadrt btint_thc name=btint_axi0
 
-# The ioexpander component - must be after fpga loads
-loadrt jd2_ioexp name=jd2_ioexp_axi1
-
 # E-Stop
 loadrt estop_latch
 
@@ -34,9 +31,6 @@ addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread
 
 # Torch height function
 addf btint_thc.0.update                    servo-thread
-
-# IO Expander function
-addf jd2_ioexp.0.update                    servo-thread
 
 # The E-Stop latch function
 addf estop_latch.0                         servo-thread
@@ -80,10 +74,9 @@ setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxaccel         [AXIS_0]STEPGEN_MAXAC
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.00.maxvel           [AXIS_0]STEPGEN_MAXVEL
 
 # Home and min limit for X axis are same signal - No max switch #
-setp hm2_[HOSTMOT2](BOARD).0.gpio.017.is_output false
-net x-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.017.in
+setp hm2_[HOSTMOT2](BOARD).0.gpio.041.is_output false
+net x-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.041.in
 net x-home	=> axis.0.home-sw-in
-#net x-home 	=> axis.0.neg-lim-sw-in
 
 #*******************
 #  AXIS Y
@@ -105,10 +98,10 @@ net y-enable     => hm2_[HOSTMOT2](BOARD).0.stepgen.01.enable
 # Fault signal
 setp hm2_[HOSTMOT2](BOARD).0.gpio.004.is_output false
 setp hm2_[HOSTMOT2](BOARD).0.gpio.008.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.065.is_output false
 net y1-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.004.in
 net y2-fault	<= hm2_[HOSTMOT2](BOARD).0.gpio.008.in
-net y-fault 	<= hm2_[HOSTMOT2](BOARD).0.gpio.016.in
+net y-fault 	<= hm2_[HOSTMOT2](BOARD).0.gpio.065.in
 #net y-fault 	=> axis.1.amp-fault-in
 
 # Step Gen signals/setup
@@ -146,10 +139,9 @@ net y2-pos-fb <=  hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-fb
 net y-pos-cmd =>  hm2_[HOSTMOT2](BOARD).0.stepgen.02.position-cmd
 
 # Home and max limit for Y axis are same signal - No min switch #
-setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output false
-net y-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.018.in
+setp hm2_[HOSTMOT2](BOARD).0.gpio.042.is_output false
+net y-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.042.in
 net y-home	=> axis.1.home-sw-in
-#net y-home	=> axis.1.pos-lim-sw-in
 
 #*******************
 #  AXIS Z
@@ -183,55 +175,77 @@ setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxaccel         [AXIS_2]STEPGEN_MAXAC
 setp   hm2_[HOSTMOT2](BOARD).0.stepgen.03.maxvel           [AXIS_2]STEPGEN_MAXVEL
 
 # Home and max limit for Z axis are same signal - No min switch #
-setp hm2_[HOSTMOT2](BOARD).0.gpio.019.is_output false
-net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.019.in
+setp hm2_[HOSTMOT2](BOARD).0.gpio.043.is_output false
+net z-home 	<= hm2_[HOSTMOT2](BOARD).0.gpio.043.in
 net z-home	=> axis.2.home-sw-in
-#net z-home	=> axis.2.pos-lim-sw-in
 
 #*******************
 # Z Probes
 #*******************
 
-setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.031.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.036.is_output true
-setp hm2_[HOSTMOT2](BOARD).0.gpio.037.is_output true
-net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.024.in
-net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.026.in
-net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.031.in
+setp hm2_[HOSTMOT2](BOARD).0.gpio.038.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.039.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.066.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.067.is_output true
+net el-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.038.in
+net sw-probe	<= hm2_[HOSTMOT2](BOARD).0.gpio.039.in
+net probe-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.066.in
 net probe-in	=> motion.probe-input
-net el-probe-over => hm2_[HOSTMOT2](BOARD).0.gpio.037.out
+net el-probe-over => hm2_[HOSTMOT2](BOARD).0.gpio.067.out
 
 # Electric probe control pin is dio 0
+setp hm2_[HOSTMOT2](BOARD).0.gpio.022.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.050.is_output false # Fault
 net el-probe-ctrl	<= motion.digital-out-00
-setp hm2_[HOSTMOT2](BOARD).0.gpio.021.is_output true
-net el-probe-ctrl	=> hm2_[HOSTMOT2](BOARD).0.gpio.021.out
+net el-probe-ctrl	=> hm2_[HOSTMOT2](BOARD).0.gpio.022.out
+net el-probe-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.050.in
 
 #  ---motion control signals---
 net in-position               <=  motion.in-position
 net machine-is-enabled        <=  motion.motion-enabled
 
 # --- MACHINE-IS-ENABLED ---
-setp hm2_[HOSTMOT2](BOARD).0.gpio.022.is_output true
-net machine-is-enabled     => hm2_[HOSTMOT2](BOARD).0.gpio.022.out
+setp hm2_[HOSTMOT2](BOARD).0.gpio.020.is_output true # Contactor Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.049.is_output false # Contactor Fault
+net machine-is-enabled     => hm2_[HOSTMOT2](BOARD).0.gpio.020.out
+net cont-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.049.in
 
 # E-stop switch or torch breakaway are both treated the same
-setp hm2_[HOSTMOT2](BOARD).0.gpio.027.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.028.is_output false
-setp hm2_[HOSTMOT2](BOARD).0.gpio.030.is_output true
-net estop-in	<= hm2_[HOSTMOT2](BOARD).0.gpio.027.in
-net tbreak-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
+setp hm2_[HOSTMOT2](BOARD).0.gpio.035.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.036.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.063.is_output true
+net estop-in	<= hm2_[HOSTMOT2](BOARD).0.gpio.035.in
+net tbreak-in 	<= hm2_[HOSTMOT2](BOARD).0.gpio.036.in
 net estop-loopout iocontrol.0.emc-enable-in <= estop_latch.0.ok-out
 net estop-loopin iocontrol.0.user-enable-out => estop_latch.0.ok-in
 net estop-reset iocontrol.0.user-request-enable => estop_latch.0.reset
-net remote-estop <= hm2_[HOSTMOT2](BOARD).0.gpio.029.in
+net remote-estop <= hm2_[HOSTMOT2](BOARD).0.gpio.064.in
 net remote-estop => estop_latch.0.fault-in
-net tbreak-override => hm2_[HOSTMOT2](BOARD).0.gpio.030.out
+net tbreak-override => hm2_[HOSTMOT2](BOARD).0.gpio.063.out
+
+# Torch Control Signals
+setp hm2_[HOSTMOT2](BOARD).0.gpio.021.is_output true
+setp hm2_[HOSTMOT2](BOARD).0.gpio.068.is_output true
+# Automatic torch request comes from motion
+net torchon <= motion.digital-out-02
+net torchon => hm2_[HOSTMOT2](BOARD).0.gpio.021.out
+net torchon => btint_thc.0.torch-on
+# User torch request comes from GUI
+net torchon-man => hm2_[HOSTMOT2](BOARD).0.gpio.068.out
+
+# ARC-OK comes from GPIO
+setp hm2_[HOSTMOT2](BOARD).0.gpio.037.is_output false
+setp hm2_[HOSTMOT2](BOARD).0.gpio.069.is_output true
+net arcok   <= hm2_[HOSTMOT2](BOARD).0.gpio.037.in
+net arcok   => motion.digital-in-02
+net thc-has-arc-ok => hm2_[HOSTMOT2](BOARD).0.gpio.069.out
+
+# Dry Run Indicator
+setp hm2_[HOSTMOT2](BOARD).0.gpio.047.is_output true
+net dry-run => hm2_[HOSTMOT2](BOARD).0.gpio.047.out
 
 # THC
-net arcok   <= btint_thc.0.arc-ok
-net arcok   => motion.digital-in-02
+net arcok => btint_thc.0.arc-ok
 net arcv    <= btint_thc.0.arc-volt
 net reqarcv => btint_thc.0.req-arc-volt
 net reqarcv <= motion.analog-out-00
@@ -239,9 +253,6 @@ net mvel    <= motion.current-vel
 net mvel    => btint_thc.0.cur-vel
 net rvel    <= motion.requested-vel
 net rvel    => btint_thc.0.req-vel
-net torchon <= motion.digital-out-02
-net torchon => btint_thc.0.torch-on
-net torchon-man => btint_thc.0.torch-on-man
 net thcon   <= motion.digital-out-01
 net thcon   => btint_thc.0.enable
 net thc-joint-pos-cmd <= axis.2.joint-pos-cmd
@@ -257,35 +268,98 @@ net z-pos-fb-raw => btint_thc.0.z-pos-fb-in
 net thc-ready <= btint_thc.0.ready
 net thc-active <= btint_thc.0.active
 net thc-volt-off => btint_thc.0.req-arc-volt-off
-net thc-dry-run => btint_thc.0.dry-run
+net dry-run => btint_thc.0.dry-run
 net thc-prev-err => btint_thc.0.prev-err
-net thc-vel-tol => btint_thc.0.vel-tol # Default 0.75
-net thc-volt-tol => btint_thc.0.volt-tol # Default 0.25
-net thc-correction-kp => btint_thc.0.correction-kp # Default 0.005
-net thc-correction-kd => btint_thc.0.correction-kd # Default 0.0025
-net thc-plasma-divisor => btint_thc.0.plasma-divisor # Default 50.0
-net thc-range-sel => btint_thc.0.range-sel # Default 10
-net thc-has-arc-ok => btint_thc.0.has-arc-ok # Default true
+net thc-vel-tol => btint_thc.0.vel-tol
+net thc-volt-tol => btint_thc.0.volt-tol
+net thc-correction-kp => btint_thc.0.correction-kp
+net thc-correction-kd => btint_thc.0.correction-kd
+net thc-plasma-divisor => btint_thc.0.plasma-divisor
+net thc-range-sel => btint_thc.0.range-sel
 net thc-lockout => btint_thc.0.lockout
 
-# IO Expander
-net laser-en => jd2_ioexp.0.laser-en
-net out1-ctrl => jd2_ioexp.0.output.0
-net out1-ctrl => motion.digital-out-03
-net out2-ctrl => jd2_ioexp.0.output.1
-net out2-ctrl => motion.digital-out-04
-net out3-ctrl => jd2_ioexp.0.output.2
-net out3-ctrl => motion.digital-out-05
-net out4-ctrl => jd2_ioexp.0.output.3
-net out4-ctrl => motion.digital-out-06
-net out5-ctrl => jd2_ioexp.0.output.4
-net out5-ctrl => motion.digital-out-07
-net out6-ctrl => jd2_ioexp.0.output.5
-net out6-ctrl => motion.digital-out-08
-net out7-ctrl => jd2_ioexp.0.output.6
-net out7-ctrl => motion.digital-out-09
-net out8-ctrl => jd2_ioexp.0.output.7
-net out8-ctrl => motion.digital-out-10
+# Laser Indicator
+setp hm2_[HOSTMOT2](BOARD).0.gpio.023.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.051.is_output false # Fault
+net laser-en => hm2_[HOSTMOT2](BOARD).0.gpio.023.out
+net laser-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.051.in
+
+# Auxiliary Output 1
+setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.052.is_output false # Fault
+net out1 <= motion.digital-out-03
+net out1 => hm2_[HOSTMOT2](BOARD).0.gpio.024.out
+net out1-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.052.in
+
+# Auxiliary Output 2
+setp hm2_[HOSTMOT2](BOARD).0.gpio.025.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.053.is_output false # Fault
+net out2 <= motion.digital-out-04
+net out2 => hm2_[HOSTMOT2](BOARD).0.gpio.025.out
+net out2-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.053.in
+
+# Auxiliary Output 3
+setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.054.is_output false # Fault
+net out3 <= motion.digital-out-05
+net out3 => hm2_[HOSTMOT2](BOARD).0.gpio.026.out
+net out3-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.054.in
+
+# Auxiliary Output 4
+setp hm2_[HOSTMOT2](BOARD).0.gpio.027.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.055.is_output false # Fault
+net out4 <= motion.digital-out-06
+net out4 => hm2_[HOSTMOT2](BOARD).0.gpio.027.out
+net out4-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.055.in
+
+# Auxiliary Output 5
+setp hm2_[HOSTMOT2](BOARD).0.gpio.028.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.056.is_output false # Fault
+net out5 <= motion.digital-out-07
+net out5 => hm2_[HOSTMOT2](BOARD).0.gpio.028.out
+net out5-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.056.in
+
+# Auxiliary Output 6
+setp hm2_[HOSTMOT2](BOARD).0.gpio.029.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.057.is_output false # Fault
+net out6 <= motion.digital-out-08
+net out6 => hm2_[HOSTMOT2](BOARD).0.gpio.029.out
+net out6-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.057.in
+
+# Auxiliary Output 7
+setp hm2_[HOSTMOT2](BOARD).0.gpio.030.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.058.is_output false # Fault
+net out7 <= motion.digital-out-09
+net out7 => hm2_[HOSTMOT2](BOARD).0.gpio.030.out
+net out7-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.058.in
+
+# Auxiliary Output 8
+setp hm2_[HOSTMOT2](BOARD).0.gpio.031.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.059.is_output false # Fault
+net out8 <= motion.digital-out-10
+net out8 => hm2_[HOSTMOT2](BOARD).0.gpio.031.out
+net out8-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.059.in
+
+# Auxiliary Output 9
+setp hm2_[HOSTMOT2](BOARD).0.gpio.032.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.060.is_output false # Fault
+net out9 <= motion.digital-out-11
+net out9 => hm2_[HOSTMOT2](BOARD).0.gpio.032.out
+net out9-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.060.in
+
+# Auxiliary Output 10
+setp hm2_[HOSTMOT2](BOARD).0.gpio.033.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.061.is_output false # Fault
+net out10 <= motion.digital-out-12
+net out10 => hm2_[HOSTMOT2](BOARD).0.gpio.033.out
+net out10-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.061.in
+
+# Auxiliary Output 11
+setp hm2_[HOSTMOT2](BOARD).0.gpio.034.is_output true # Control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.062.is_output false # Fault
+net out11 <= motion.digital-out-13
+net out11 => hm2_[HOSTMOT2](BOARD).0.gpio.034.out
+net out11-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.062.in
 
 # GUI Components
 newcomp gui-thc
@@ -309,8 +383,8 @@ net torchon => gui-thc.torch-led
 net arcv => gui-thc.torch-volt
 net reqarcv => gui-thc.req-torch-volt
 net tbreak-override => gui-thc.tbreak-override
-net thc-volt-off <= gui-thc.btint-voltoff
-net thc-dry-run <= gui-thc.btint-dryrun
+net thc-volt-off => gui-thc.btint-voltoff
+net dry-run <= gui-thc.btint-dryrun
 net arcok => gui-thc.thc-arcok
 net thcon => gui-thc.thc-enabled
 net estop-in => gui-thc.estop

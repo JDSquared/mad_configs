@@ -1,0 +1,19 @@
+(Remap subroutine to turn on output P)
+(P is 1-11)
+(Q is 0 for synchronized output, immediate otherwise)
+O<auxout_on> sub
+
+	O101 if [EXISTS[#<q>]] (Check if selecting output synchronization type)
+		O102 if[#<q> NE 0]
+			M64 P[2 + #<P>]
+		O102 else
+			M62 P[2 + #<P>]
+		O102 endif
+	O101 else
+		M62 P[2 + #<P>] (Default to motion synchronized)
+	O101 endif
+
+O<auxout_on> endsub
+
+M2 (If we ever get here stop the program execution)
+

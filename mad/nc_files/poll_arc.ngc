@@ -1,8 +1,29 @@
 o<poll_arc> sub
-M66 P2 L3 Q5.
-O200 if [#5399 EQ -1.0]
-    (MSG, Error! ARC OK never asserted!)
-    M2
-O200 endif
+
+#1 = 0 (Retry counter)
+
+O100 do
+	(Check for the arc)
+	M66 P2 L3 Q5.
+
+	O200 if [#5399 EQ -1.0]
+		M105 P1	(Torch off)
+		G04 P0.5
+
+		(No arc, retry up to the limit of 3 times)
+		#1 = [#1 + 1] (Increment retry counter)
+		O210 if [#1 GT 2] 
+			(ABORT, Error! ARC OK not asserted after 3 tries!)
+		O210 endif
+
+		(MSG, Error! ARC OK not asserted! Retrying...)
+		M103 (Torch on)
+	O200 else
+		O100 break (Good Arc)	
+	O200 endif
+O100 while [#1 LT 3]
+
 o<poll_arc> endsub
+
+M2 (If we ever get here stop the program execution)
  

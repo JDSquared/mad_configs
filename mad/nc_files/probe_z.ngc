@@ -73,7 +73,7 @@ O<probe_z> sub
 	O250 if [#<tz> GT #<maxz>]
 		M101 (Turn off e-probe before exiting)
 		M50 P1 (Enable feed override)
-		(ABORT, Probe move over travels positive Z!\r\nCheck for debris or water?)
+		(ABORT, Probe move over travels positive Z! Check for debris?)
 	O250 endif
 
 	(Probe up at low speed to latch height)

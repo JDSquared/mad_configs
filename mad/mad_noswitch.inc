@@ -2,7 +2,7 @@
 DRIVER=hm2_soc_ol
 BOARD=jdcb
 DEVNAME=hm2-socfpga0
-CONFIG="firmware=zynq/dtbo/zturn_jd2cb_7z010_ol.dtbo num_encoders=0 num_pwmgens=0 num_stepgens=5"
+CONFIG="firmware=zynq/dtbo/zturn_jd2cb_r2_7z010_ol.dtbo num_encoders=0 num_pwmgens=0 num_stepgens=5"
 
 [EMCIO]
 EMCIO = io
@@ -27,22 +27,8 @@ REMAP=M105 modalgroup=10 argspec=p ngc=torch_off
 REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
-REMAP=M150 modalgroup=10 argspec=p ngc=out1_on
-REMAP=M151 modalgroup=10 argspec=p ngc=out1_off
-REMAP=M152 modalgroup=10 argspec=p ngc=out2_on
-REMAP=M153 modalgroup=10 argspec=p ngc=out2_off
-REMAP=M154 modalgroup=10 argspec=p ngc=out3_on
-REMAP=M155 modalgroup=10 argspec=p ngc=out3_off
-REMAP=M156 modalgroup=10 argspec=p ngc=out4_on
-REMAP=M157 modalgroup=10 argspec=p ngc=out4_off
-REMAP=M158 modalgroup=10 argspec=p ngc=out5_on
-REMAP=M159 modalgroup=10 argspec=p ngc=out5_off
-REMAP=M160 modalgroup=10 argspec=p ngc=out6_on
-REMAP=M161 modalgroup=10 argspec=p ngc=out6_off
-REMAP=M162 modalgroup=10 argspec=p ngc=out7_on
-REMAP=M163 modalgroup=10 argspec=p ngc=out7_off
-REMAP=M164 modalgroup=10 argspec=p ngc=out8_on
-REMAP=M165 modalgroup=10 argspec=p ngc=out8_off
+REMAP=M150 modalgroup=10 argspec=Pq ngc=auxout_on
+REMAP=M151 modalgroup=10 argspec=Pq ngc=auxout_off
 ON_ABORT_COMMAND=o<on_abort> call
 
 [EMCMOT]
@@ -50,7 +36,7 @@ EMCMOT = motmod
 COMM_TIMEOUT = 1.0
 COMM_WAIT = 0.010
 SERVO_PERIOD = 1000000
-NUM_DIO = 12
+NUM_DIO = 14
 
 [HAL]
 HALFILE = mad_noswitch.hal
