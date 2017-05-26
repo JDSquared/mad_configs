@@ -359,7 +359,7 @@ net out11 <= motion.digital-out-13
 net out11 => hm2_[HOSTMOT2](BOARD).0.gpio.034.out
 net out11-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.062.in
 
-# GUI Components
+# THC GUI Component
 newcomp gui-thc
 newpin gui-thc gui-thc.torch-led bit in
 newpin gui-thc gui-thc.torch-volt float in
@@ -374,7 +374,6 @@ newpin gui-thc gui-thc.elprobe-override bit out
 newpin gui-thc gui-thc.thc-lockout bit out
 newpin gui-thc gui-thc.torch-on-man bit out
 newpin gui-thc gui-thc.thc-enabled bit in
-newpin gui-thc gui-thc.laser-en bit out
 ready gui-thc
 
 net torchon => gui-thc.torch-led
@@ -390,8 +389,15 @@ net tbreak-in => gui-thc.tbreak
 net el-probe-over <= gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
-net laser-en <= gui-thc.laser-en
 
+# Jog GUI Component
+newcomp gui-jog
+newpin gui-jog gui-jog.laser-en bit out
+ready gui-jog
+
+net laser-en <= gui-jog.laser-en
+
+# THC Settings Component
 newcomp thc-settings
 newpin thc-settings thc-settings.thc-vel-tol float out
 newpin thc-settings thc-settings.thc-volt-tol float out
@@ -410,6 +416,7 @@ net thc-plasma-divisor => thc-settings.thc-plasma-divisor
 net thc-range-sel => thc-settings.thc-range-sel
 net thc-has-arc-ok => thc-settings.thc-has-arc-ok
 
+# Probe Settings Component
 newcomp probe-settings
 newpin probe-settings probe-settings.high-feed float out
 newpin probe-settings probe-settings.low-feed float out
@@ -422,6 +429,7 @@ net probe-lfeed <= probe-settings.low-feed
 net probe-el-off <= probe-settings.el-cal-off
 net probe-sw-off <= probe-settings.sw-cal-off
 
+# Consumable Settings Component
 newcomp gui-consum
 newpin gui-consum gui-consum.cut-voltage float out
 newpin gui-consum gui-consum.cut-feed float out

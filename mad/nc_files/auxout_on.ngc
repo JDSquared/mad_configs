@@ -1,17 +1,28 @@
 (Remap subroutine to turn on output P)
 (P is 1-11)
-(Q is 0 for synchronized output, immediate otherwise)
+(Q is used 0 for synchronized output, immediate otherwise)
+(If the output has a turn on dwell time stored, it will be)
+(used in immediate mode only)
+(Turn on dwell is the 6th item in the variable map)
+
 O<auxout_on> sub
+
+	(Disable breakaway sensing while activating an IO)
+	M64 P3
 
 	O101 if [EXISTS[#<q>]] (Check if selecting output synchronization type)
 		O102 if[#<q> NE 0]
-			M64 P[2 + #<P>]
+			M64 P[3 + #<P>]
+			G04 P#[4481 + #<P>*25] (Dwell the stored time)
 		O102 else
-			M62 P[2 + #<P>]
+			M62 P[3 + #<P>]
 		O102 endif
 	O101 else
-		M62 P[2 + #<P>] (Default to motion synchronized)
+		M62 P[3 + #<P>] (Default to motion synchronized)
 	O101 endif
+
+	(Reenable Breakaway Sensing)
+	M65 P3
 
 O<auxout_on> endsub
 

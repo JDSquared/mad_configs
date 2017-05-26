@@ -1,19 +1,44 @@
 (Remap subroutine to change offset for attachment locations)
-(P is the attachment tool number)
+(P is the attachment number, 1-11)
+(The primary dock is zero offset, torch, router, etc.)
+(The offsets are coming from variable locations 4500-5000)
+(500 Variables with 25 variables reserved per attachment)
+(gives 20 possible attachments. Variable Map: )
+(0: x)
+(1: y)
+(2: z)
+(3: a)
+(4: b)
+(5: c)
+(6: dwell-on)
+(7: dwell-off)
+(8: feed)
+(9: plunge-feed)
+(10: rapid-height)
+(11: op-height)
 
 O<attoffset> sub
-	(The primary dock is zero offset, torch, router, etc.)
-	(The offsets are coming from the hal with names)
-	(att1XOff, att1YOff, att1ZOff, att2XOff, etc.)
-	
+	#<oldabs>=#<_incremental>
+	#<oldx>=#<_x>
+	#<oldy>=#<_y>
+
 	(Clear any existing offset)	
 	G92.1
 
-	(Apply the new offset if required)
-	O101 if[#<P> EQ 2.0]
-		G92 X[#<_x> + #<_hal[att1OffX]>] Y[#<_y> + #<_hal[att1OffY]>] Z[#<_z> + #<_hal[att1OffZ]>]
+	(Move to Machine Z0 for change)
+	G90 G53 G00 Z0.0
+	
+	O101 if[#<P> GE 1.0]
+		(Assign the new offset)
+		G92 X[#<_x> + #[4475 + #<P>*25]] Y[#<_y> + #[4476 + #<P>*25]] Z[#<_z> + #[4477 + #<P>*25]]
 	O101 endif
 
+	G00 X#<oldx> Y#<oldy>
+
+	(Restore the old positioning mode)
+	O200 if [#<oldabs> EQ 1]
+		G91
+	O200 endif
 O<attoffset> endsub
 
 M2 (If we ever get here stop the program execution)
