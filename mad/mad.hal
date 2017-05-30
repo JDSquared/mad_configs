@@ -264,6 +264,7 @@ net thc-pos-in  => btint_thc.0.z-pos-in
 net thc-pos-in  <= axis.2.motor-pos-cmd
 net thc-fb  <= btint_thc.0.z-pos-fb
 net thc-fb  => axis.2.motor-pos-fb
+net thc-z-offset <= btint_thc.0.z-offset
 net z-pos-fb-raw => btint_thc.0.z-pos-fb-in
 net thc-ready <= btint_thc.0.ready
 net thc-active <= btint_thc.0.active
@@ -277,6 +278,7 @@ net thc-correction-kd => btint_thc.0.correction-kd
 net thc-plasma-divisor => btint_thc.0.plasma-divisor
 net thc-range-sel => btint_thc.0.range-sel
 net thc-lockout => btint_thc.0.lockout
+setp btint_thc.0.plasma-minvolt 25.0
 
 # Control Torch Breakaway Override
 setp hm2_[HOSTMOT2](BOARD).0.gpio.070.is_output true
@@ -381,6 +383,7 @@ newpin gui-thc gui-thc.elprobe-override bit out
 newpin gui-thc gui-thc.thc-lockout bit out
 newpin gui-thc gui-thc.torch-on-man bit out
 newpin gui-thc gui-thc.thc-enabled bit in
+newpin gui-thc gui-thc.z-offset float in 
 ready gui-thc
 
 net torchon => gui-thc.torch-led
@@ -396,6 +399,7 @@ net tbreak-in => gui-thc.tbreak
 net el-probe-over <= gui-thc.elprobe-override
 net thc-lockout <= gui-thc.thc-lockout
 net torchon-man <= gui-thc.torch-on-man
+net thc-z-offset => gui-thc.z-offset
 
 # Jog GUI Component
 newcomp gui-jog

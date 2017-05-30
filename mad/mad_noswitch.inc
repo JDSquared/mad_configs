@@ -36,7 +36,7 @@ EMCMOT = motmod
 COMM_TIMEOUT = 1.0
 COMM_WAIT = 0.010
 SERVO_PERIOD = 1000000
-NUM_DIO = 14
+NUM_DIO = 15
 
 [HAL]
 HALFILE = mad_noswitch.hal
