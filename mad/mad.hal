@@ -291,6 +291,9 @@ setp hm2_[HOSTMOT2](BOARD).0.gpio.051.is_output false # Fault
 net laser-en => hm2_[HOSTMOT2](BOARD).0.gpio.023.out
 net laser-fault <= hm2_[HOSTMOT2](BOARD).0.gpio.051.in
 
+# Active Attachment
+net act-att <= motion.analog-out-01
+
 # Auxiliary Output 1
 setp hm2_[HOSTMOT2](BOARD).0.gpio.024.is_output true # Control
 setp hm2_[HOSTMOT2](BOARD).0.gpio.052.is_output false # Fault
@@ -404,9 +407,11 @@ net thc-z-offset => gui-thc.z-offset
 # Jog GUI Component
 newcomp gui-jog
 newpin gui-jog gui-jog.laser-en bit out
+newpin gui-jog gui-jog.act-att float in
 ready gui-jog
 
 net laser-en <= gui-jog.laser-en
+net act-att => gui-jog.act-att
 
 # THC Settings Component
 newcomp thc-settings

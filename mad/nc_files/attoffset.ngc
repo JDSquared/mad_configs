@@ -39,6 +39,9 @@ O<attoffset> sub
 	O200 if [#<oldabs> EQ 1]
 		G91
 	O200 endif
+
+	(Assign the current attachment)
+	M68 E1 Q#<P>
 O<attoffset> endsub
 
 M2 (If we ever get here stop the program execution)
