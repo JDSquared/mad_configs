@@ -1,5 +1,7 @@
 (Remap subroutine to change offset for attachment locations)
 (P is the attachment number, 1-11)
+(Optional q, relative x position)
+(Optional r, relative y position)
 (The primary dock is zero offset, torch, router, etc.)
 (The offsets are coming from variable locations 4500-5000)
 (500 Variables with 25 variables reserved per attachment)
@@ -33,7 +35,20 @@ O<attoffset> sub
 		G92 X[#<_x> + #[4475 + #<P>*25]] Y[#<_y> + #[4476 + #<P>*25]] Z[#<_z> + #[4477 + #<P>*25]]
 	O101 endif
 
-	G00 X#<oldx> Y#<oldy>
+	O150 if [EXISTS[#<q>]]
+		O151 if[EXISTS[#<r>]]
+			(X and Y)
+			G00 X[#<oldx> + #<q>] Y[#<oldy> + #<r>]
+		O151 else
+			(X only)
+			G00 X[#<oldx> + #<q>] Y#<oldy>
+		O151 endif
+	O150 elseif [EXISTS[#<r>]]
+		(Y only)
+		G00 X#<oldx> Y[#<oldy> + #<r>]
+	O150 else
+		G00 X#<oldx> Y#<oldy>
+	O150 endif
 
 	(Restore the old positioning mode)
 	O200 if [#<oldabs> EQ 1]

@@ -24,7 +24,7 @@ REMAP=M101 modalgroup=10 ngc=el_probe_off
 REMAP=M103 modalgroup=10 ngc=torch_on
 REMAP=M104 modalgroup=10 argspec=P ngc=torch_voltage
 REMAP=M105 modalgroup=10 argspec=p ngc=torch_off
-REMAP=M106 modalgroup=10 argspec=P ngc=attoffset
+REMAP=M106 modalgroup=10 argspec=Pqr ngc=attoffset
 REMAP=M130 modalgroup=10 ngc=thc_on
 REMAP=M131 modalgroup=10 ngc=thc_off
 REMAP=M150 modalgroup=10 argspec=Pq ngc=auxout_on
